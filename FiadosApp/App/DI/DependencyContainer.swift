@@ -35,4 +35,15 @@ final class DependencyContainer {
     func getCustomerRepository() -> CustomerRepositoryProtocol {
         customerRepository
     }
+    
+    
+    
+    // vistas
+    func makeCustomerListViewModel() -> CustomerListViewModel {
+        CustomerListViewModel(repository: customerRepository)
+    }
+    
+    func makeAddCustomerViewModel() -> AddCustomerViewModel {
+        AddCustomerViewModel(repository: customerRepository)
+    }
 }
