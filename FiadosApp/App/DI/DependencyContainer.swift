@@ -54,4 +54,11 @@ final class DependencyContainer {
             registerUseCase: makeRegisterTransactionUseCase()
         )
     }
+    
+
+    func makeDashboardViewModel() -> DashboardViewModel {
+        DashboardViewModel(
+            getStatsUseCase: makeGetDashboardStatsUseCase()
+        )
+    }
 }

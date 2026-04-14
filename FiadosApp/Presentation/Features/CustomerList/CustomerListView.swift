@@ -4,6 +4,8 @@ struct CustomerListView: View {
     @State var viewModel: CustomerListViewModel
     @State private var isShowingAddCustomer = false
     
+    let container: DependencyContainer
+    
     var body: some View {
         List {
             if viewModel.isLoading {

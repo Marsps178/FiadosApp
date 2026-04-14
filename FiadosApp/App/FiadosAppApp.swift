@@ -11,7 +11,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 @main
-@main
 struct FiadosAppApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     let container = DependencyContainer()

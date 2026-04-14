@@ -5,7 +5,7 @@ enum TransactionType: String {
     case credit // Abono (pago)
 }
 
-struct DebtTransaction: Identifiable, Equatable {
+struct DebtTransaction: Identifiable, Equatable, Hashable {
     let id: String
     let customerId: String
     let amount: Double
