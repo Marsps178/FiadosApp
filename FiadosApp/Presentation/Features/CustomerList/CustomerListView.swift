@@ -19,6 +19,7 @@ struct CustomerListView: View {
             }
         }
         .navigationTitle("Clientes")
+        .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $viewModel.searchText, prompt: "Buscar cliente")
         .toolbar {
             Button(action: { isShowingAddCustomer = true }) {
@@ -31,10 +32,6 @@ struct CustomerListView: View {
         }
         .sheet(isPresented: $isShowingAddCustomer) {
             AddCustomerView(viewModel: container.makeAddCustomerViewModel())
-        }
-        .navigationDestination(for: Customer.self) { customer in
-            // Detalle del cliente
-            Text("Detalle de \(customer.name)")
         }
     }
 }

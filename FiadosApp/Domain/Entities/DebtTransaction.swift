@@ -1,6 +1,6 @@
 import Foundation
 
-enum TransactionType: String {
+enum TransactionType: String, Hashable{
     case charge // Cargo (fiado)
     case credit // Abono (pago)
 }
