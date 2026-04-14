@@ -46,4 +46,12 @@ final class DependencyContainer {
     func makeAddCustomerViewModel() -> AddCustomerViewModel {
         AddCustomerViewModel(repository: customerRepository)
     }
+    
+    func makeCustomerDetailViewModel(customer: Customer) -> CustomerDetailViewModel {
+        CustomerDetailViewModel(
+            customer: customer,
+            transactionRepo: transactionRepository,
+            registerUseCase: makeRegisterTransactionUseCase()
+        )
+    }
 }

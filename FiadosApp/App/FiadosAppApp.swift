@@ -11,20 +11,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 @main
+@main
 struct FiadosAppApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
-    // Instanciamos el contenedor único para toda la App
     let container = DependencyContainer()
 
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                // Inyectamos las dependencias necesarias al ViewModel del Dashboard
                 DashboardView(
-                    viewModel: DashboardViewModel(
-                        getStatsUseCase: container.makeGetDashboardStatsUseCase()
-                    )
+                    viewModel: container.makeDashboardViewModel(),
+                    container: container
                 )
             }
         }
