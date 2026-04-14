@@ -95,5 +95,10 @@ struct DashboardView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
+        .onAppear {
+                Task {
+                    await viewModel.loadDashboard()
+                }
+            }
     }
 }

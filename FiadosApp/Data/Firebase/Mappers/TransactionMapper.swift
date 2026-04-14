@@ -16,7 +16,7 @@ extension TransactionDTO {
 extension DebtTransaction {
     func toDTO() -> TransactionDTO {
         TransactionDTO(
-            id: self.id,
+            id: nil,
             customerId: self.customerId,
             amount: self.amount,
             concept: self.concept,

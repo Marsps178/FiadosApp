@@ -8,7 +8,7 @@ class FirebaseTransactionRepository: TransactionRepositoryProtocol {
     func fetchTransactions(for customerId: String) async throws -> [DebtTransaction] {
         let snapshot = try await db.collection(collectionName)
             .whereField("customerId", isEqualTo: customerId)
-            .order(by: "timestamp", descending: true) // HU-06: Historial cronológico
+            .order(by: "timestamp", descending: true)
             .getDocuments()
         
         return snapshot.documents.compactMap { document in
