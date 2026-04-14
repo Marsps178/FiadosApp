@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AEA933B42F8EDA090095BB60 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = AEA933B32F8EDA090095BB60 /* FirebaseAuth */; };
+		AEA933B62F8EDA090095BB60 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = AEA933B52F8EDA090095BB60 /* FirebaseFirestore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		AEA933822F8ED0230095BB60 /* FiadosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FiadosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEA933B42F8EDA090095BB60 /* FirebaseAuth in Frameworks */,
+				AEA933B62F8EDA090095BB60 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +72,8 @@
 			);
 			name = FiadosApp;
 			packageProductDependencies = (
+				AEA933B32F8EDA090095BB60 /* FirebaseAuth */,
+				AEA933B52F8EDA090095BB60 /* FirebaseFirestore */,
 			);
 			productName = FiadosApp;
 			productReference = AEA933822F8ED0230095BB60 /* FiadosApp.app */;
@@ -94,6 +103,9 @@
 			);
 			mainGroup = AEA933792F8ED0230095BB60;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				AEA933B22F8EDA090095BB60 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AEA933832F8ED0230095BB60 /* Products */;
 			projectDirPath = "";
@@ -336,6 +348,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AEA933B22F8EDA090095BB60 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.12.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AEA933B32F8EDA090095BB60 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEA933B22F8EDA090095BB60 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		AEA933B52F8EDA090095BB60 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEA933B22F8EDA090095BB60 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AEA9337A2F8ED0230095BB60 /* Project object */;
 }

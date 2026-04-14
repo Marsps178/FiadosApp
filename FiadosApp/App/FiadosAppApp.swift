@@ -1,32 +1,32 @@
-//
-//  FiadosAppApp.swift
-//  FiadosApp
-//
-//  Created by XCODE on 14/04/26.
-//
-
 import SwiftUI
-import SwiftData
+import FirebaseCore
+
+// 1. El AppDelegate es necesario para inicializar Firebase al arrancar la App
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
+}
 
 @main
 struct FiadosAppApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    // Instanciamos el contenedor único para toda la App
+    let container = DependencyContainer()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack {
+                // Inyectamos las dependencias necesarias al ViewModel del Dashboard
+                DashboardView(
+                    viewModel: DashboardViewModel(
+                        getStatsUseCase: container.makeGetDashboardStatsUseCase()
+                    )
+                )
+            }
         }
-        .modelContainer(sharedModelContainer)
     }
 }
