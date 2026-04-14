@@ -2,7 +2,7 @@ import SwiftUI
 
 struct DashboardView: View {
     @State var viewModel: DashboardViewModel
-    let container: DependencyContainer // Necesario para inyectar en la navegación
+    let container: DependencyContainer
     
     var body: some View {
         ScrollView {
@@ -49,7 +49,12 @@ struct DashboardView: View {
                         .padding()
                     } else {
                         ForEach(viewModel.topDebtors) { customer in
-                            DashboardCustomerRow(customer: customer)
+                            // Envolvemos cada fila en un NavigationLink(value:)
+                            // Esto dispara el .navigationDestination de abajo
+                            NavigationLink(value: customer) {
+                                DashboardCustomerRow(customer: customer)
+                            }
+                            .buttonStyle(.plain) // Para que no se vea azul todo el renglón
                         }
                     }
                 }
@@ -75,6 +80,10 @@ struct DashboardView: View {
             .padding()
         }
         .navigationTitle("Inicio")
+        // --- CENTRALIZACIÓN DE NAVEGACIÓN ---
+        .navigationDestination(for: Customer.self) { customer in
+            CustomerDetailView(viewModel: container.makeCustomerDetailViewModel(customer: customer))
+        }
         .refreshable {
             await viewModel.loadDashboard()
         }
@@ -86,39 +95,5 @@ struct DashboardView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
-    }
-}
-
-// Sub-componente para las filas del Dashboard
-struct DashboardCustomerRow: View {
-    let customer: Customer
-    
-    var body: some View {
-        HStack {
-            Circle()
-                .fill(customer.isCloseToLimit ? .red.opacity(0.1) : .gray.opacity(0.1))
-                .frame(width: 45, height: 45)
-                .overlay(
-                    Image(systemName: "person.fill")
-                        .foregroundColor(customer.isCloseToLimit ? .red : .gray)
-                )
-            
-            VStack(alignment: .leading) {
-                Text(customer.name)
-                    .font(.body.bold())
-                Text("Límite: $\(customer.creditLimit, specifier: "%.0f")")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-            
-            Text("$\(customer.currentDebt, specifier: "%.2f")")
-                .foregroundColor(customer.isCloseToLimit ? .red : .primary)
-                .font(.callout.bold())
-        }
-        .padding()
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
     }
 }

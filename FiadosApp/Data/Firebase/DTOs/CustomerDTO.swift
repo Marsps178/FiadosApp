@@ -6,4 +6,10 @@ struct CustomerDTO: Codable {
     let phone: String
     let limit: Double
     let debt: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case name, phone, limit, debt
+    }
 }
+
+
