@@ -1,6 +1,5 @@
 import Foundation
-import FirebaseFirestore     
-import FirebaseFirestoreSwift
+import FirebaseFirestore
 struct TransactionDTO: Codable {
     @DocumentID var id: String?
     let customerId: String
