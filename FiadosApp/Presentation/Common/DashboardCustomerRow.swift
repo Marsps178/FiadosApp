@@ -16,14 +16,14 @@ struct DashboardCustomerRow: View {
             VStack(alignment: .leading) {
                 Text(customer.name)
                     .font(.body.bold())
-                Text("Límite: $\(customer.creditLimit, specifier: "%.0f")")
+                Text("Límite: \(AppTheme.currency(customer.creditLimit))")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
             
             Spacer()
             
-            Text("$\(customer.currentDebt, specifier: "%.2f")")
+            Text(AppTheme.currency(customer.currentDebt))
                 .foregroundColor(customer.isCloseToLimit ? .red : .primary)
                 .font(.callout.bold())
         }

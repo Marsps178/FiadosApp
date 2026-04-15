@@ -10,6 +10,16 @@ struct CustomerListView: View {
         List {
             if viewModel.isLoading {
                 ProgressView("Cargando clientes...")
+            } else if viewModel.filteredCustomers.isEmpty {
+                if viewModel.searchText.isEmpty {
+                    ContentUnavailableView(
+                        "Sin clientes aún",
+                        systemImage: "person.crop.circle.badge.plus",
+                        description: Text("Toca + para agregar tu primer cliente.")
+                    )
+                } else {
+                    ContentUnavailableView.search(text: viewModel.searchText)
+                }
             } else {
                 ForEach(viewModel.filteredCustomers) { customer in
                     NavigationLink(value: customer) {
@@ -26,6 +36,11 @@ struct CustomerListView: View {
                 Image(systemName: "plus.circle.fill")
                     .font(.title2)
             }
+        }
+        .alert("Error", isPresented: .init(get: { viewModel.errorMessage != nil }, set: { _ in viewModel.errorMessage = nil })) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
         }
         .task {
             await viewModel.loadCustomers()

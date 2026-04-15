@@ -16,7 +16,7 @@ struct CustomerRowView: View {
             Spacer()
             
             VStack(alignment: .trailing, spacing: 4) {
-                Text("$\(customer.currentDebt, specifier: "%.2f")")
+                Text(AppTheme.currency(customer.currentDebt))
                     .font(.body)
                     .bold()
                     .foregroundColor(customer.isCloseToLimit ? .red : .primary)

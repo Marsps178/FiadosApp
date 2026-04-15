@@ -11,14 +11,14 @@ struct CustomerDetailView: View {
                 Text("Deuda Actual")
                     .font(.caption)
                     .foregroundColor(.secondary)
-                Text("$\(viewModel.customer.currentDebt, specifier: "%.2f")")
+                Text(AppTheme.currency(viewModel.customer.currentDebt))
                     .font(.system(size: 40, weight: .bold, design: .rounded))
                     .foregroundColor(viewModel.customer.isCloseToLimit ? .red : .primary)
                 
                 HStack {
-                    Label("Límite: $\(viewModel.customer.creditLimit, specifier: "%.0f")", systemImage: "creditcard")
+                    Label("Límite: \(AppTheme.currency(viewModel.customer.creditLimit))", systemImage: "creditcard")
                     Spacer()
-                    Label("Disponible: $\(viewModel.customer.availableCredit, specifier: "%.0f")", systemImage: "checkmark.circle")
+                    Label("Disponible: \(AppTheme.currency(viewModel.customer.availableCredit))", systemImage: "checkmark.circle")
                 }
                 .font(.footnote)
                 .padding(.horizontal)
@@ -45,12 +45,15 @@ struct CustomerDetailView: View {
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
-                            Text(transaction.type == .charge ? "+$\(transaction.amount, specifier: "%.2f")" : "-$\(transaction.amount, specifier: "%.2f")")
+                            Text(transaction.type == .charge ? "+\(AppTheme.currency(transaction.amount))" : "-\(AppTheme.currency(transaction.amount))")
                                 .foregroundColor(transaction.type == .charge ? .red : .green)
                                 .bold()
                         }
                     }
                 }
+            }
+            .refreshable {
+                await viewModel.loadTransactions()
             }
         }
         .navigationTitle(viewModel.customer.name)

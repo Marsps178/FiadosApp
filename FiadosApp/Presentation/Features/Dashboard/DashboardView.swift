@@ -18,7 +18,7 @@ struct DashboardView: View {
                         ProgressView()
                             .tint(.white)
                     } else {
-                        Text("$\(viewModel.totalDebt, specifier: "%.2f")")
+                        Text(AppTheme.currency(viewModel.totalDebt))
                             .font(.system(size: 42, weight: .black, design: .rounded))
                             .foregroundColor(.white)
                     }
