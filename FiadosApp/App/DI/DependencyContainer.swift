@@ -51,6 +51,7 @@ final class DependencyContainer {
         CustomerDetailViewModel(
             customer: customer,
             transactionRepo: transactionRepository,
+            customerRepo: customerRepository,
             registerUseCase: makeRegisterTransactionUseCase()
         )
     }

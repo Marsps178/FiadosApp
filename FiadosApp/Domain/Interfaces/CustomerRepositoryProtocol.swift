@@ -12,4 +12,8 @@ protocol CustomerRepositoryProtocol {
     
     /// Edita el límite de crédito de un cliente (HU-03)
     func updateCreditLimit(customerId: String, newLimit: Double) async throws
+    
+    /// Elimina un cliente permanentemente
+    func deleteCustomer(customerId: String) async throws
 }
+

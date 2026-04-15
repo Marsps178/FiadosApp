@@ -1,8 +1,9 @@
 import SwiftUI
 
 struct CustomerDetailView: View {
-    @State var viewModel: CustomerDetailViewModel
+    @Bindable var viewModel: CustomerDetailViewModel
     @State private var isShowingAddTransaction = false
+    @State private var isShowingEditLimit = false
     
     var body: some View {
         VStack {
@@ -13,19 +14,30 @@ struct CustomerDetailView: View {
                     .foregroundColor(.secondary)
                 Text(AppTheme.currency(viewModel.customer.currentDebt))
                     .font(.system(size: 40, weight: .bold, design: .rounded))
-                    .foregroundColor(viewModel.customer.isCloseToLimit ? .red : .primary)
+                    .foregroundColor(viewModel.customer.isCloseToLimit ? AppTheme.danger : .primary)
                 
-                HStack {
-                    Label("Límite: \(AppTheme.currency(viewModel.customer.creditLimit))", systemImage: "creditcard")
-                    Spacer()
-                    Label("Disponible: \(AppTheme.currency(viewModel.customer.availableCredit))", systemImage: "checkmark.circle")
+                VStack(alignment: .leading, spacing: 4) {
+                    ProgressView(
+                        value: viewModel.customer.currentDebt,
+                        total: viewModel.customer.creditLimit
+                    )
+                    .tint(viewModel.customer.isCloseToLimit ? AppTheme.danger : AppTheme.primary)
+                    .animation(.easeInOut, value: viewModel.customer.currentDebt)
+                
+                    HStack {
+                        Text("Usado: \(Int((viewModel.customer.currentDebt / viewModel.customer.creditLimit) * 100))%")
+                        Spacer()
+                        Text("Disponible: \(AppTheme.currency(viewModel.customer.availableCredit))")
+                            .foregroundColor(viewModel.customer.isCloseToLimit ? AppTheme.danger : .secondary)
+                    }
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
                 }
-                .font(.footnote)
                 .padding(.horizontal)
             }
             .padding()
-            .background(Color(.secondarySystemBackground))
-            .cornerRadius(12)
+            .background(AppTheme.cardBG)
+            .cornerRadius(AppTheme.radiusCard)
             .padding()
 
             // Lista de transacciones
@@ -45,9 +57,14 @@ struct CustomerDetailView: View {
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
-                            Text(transaction.type == .charge ? "+\(AppTheme.currency(transaction.amount))" : "-\(AppTheme.currency(transaction.amount))")
-                                .foregroundColor(transaction.type == .charge ? .red : .green)
-                                .bold()
+                            HStack(spacing: 6) {
+                                Image(systemName: transaction.type == .charge ? "arrow.up.right.circle.fill" : "arrow.down.left.circle.fill")
+                                    .foregroundColor(transaction.type == .charge ? AppTheme.danger : AppTheme.success)
+                                
+                                Text(transaction.type == .charge ? "+\(AppTheme.currency(transaction.amount))" : "-\(AppTheme.currency(transaction.amount))")
+                                    .foregroundColor(transaction.type == .charge ? AppTheme.danger : AppTheme.success)
+                                    .bold()
+                            }
                         }
                     }
                 }
@@ -58,10 +75,22 @@ struct CustomerDetailView: View {
         }
         .navigationTitle(viewModel.customer.name)
         .toolbar {
-            Button("Nueva Operación") { isShowingAddTransaction = true }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Nueva Operación") { isShowingAddTransaction = true }
+            }
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    isShowingEditLimit = true
+                } label: {
+                    Image(systemName: "pencil.circle")
+                }
+            }
         }
         .sheet(isPresented: $isShowingAddTransaction) {
-            AddTransactionView(viewModel: viewModel) // Vista que crearemos a continuación
+            AddTransactionView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $isShowingEditLimit) {
+            EditCreditLimitView(viewModel: viewModel)
         }
         .task {
             await viewModel.loadTransactions()

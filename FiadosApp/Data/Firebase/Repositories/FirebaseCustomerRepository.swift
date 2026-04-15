@@ -39,4 +39,8 @@ class FirebaseCustomerRepository: CustomerRepositoryProtocol {
             "limit": newLimit
         ])
     }
+    
+    func deleteCustomer(customerId: String) async throws {
+        try await db.collection(collectionName).document(customerId).delete()
+    }
 }

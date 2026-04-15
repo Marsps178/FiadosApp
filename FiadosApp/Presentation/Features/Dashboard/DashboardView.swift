@@ -27,13 +27,13 @@ struct DashboardView: View {
                 .padding(.vertical, 30)
                 .background(
                     LinearGradient(
-                        gradient: Gradient(colors: [.blue, .indigo]),
+                        gradient: Gradient(colors: [AppTheme.primary, AppTheme.primary.opacity(0.8)]),
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
-                .cornerRadius(20)
-                .shadow(color: .blue.opacity(0.3), radius: 10, x: 0, y: 5)
+                .cornerRadius(AppTheme.radiusCard)
+                .shadow(color: AppTheme.primary.opacity(0.3), radius: 10, x: 0, y: 5)
                 
                 // --- SECCIÓN TOP DEUDORES (HU-08) ---
                 VStack(alignment: .leading, spacing: 15) {
@@ -71,9 +71,9 @@ struct DashboardView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(AppTheme.primary)
                     .foregroundColor(.white)
-                    .cornerRadius(15)
+                    .cornerRadius(AppTheme.radiusButton)
                 }
                 .padding(.top, 10)
             }

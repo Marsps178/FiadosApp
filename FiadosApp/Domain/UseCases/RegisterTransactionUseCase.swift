@@ -15,14 +15,12 @@ struct RegisterTransactionUseCase {
             // Cargo (fiado): verificar que no supere el límite de crédito
             let nextDebt = customer.currentDebt + transaction.amount
             if nextDebt > customer.creditLimit {
-                throw NSError(domain: "CreditLimitError", code: 403,
-                              userInfo: [NSLocalizedDescriptionKey: "El cliente superaría su límite de crédito."])
+                throw AppError.creditLimitExceeded
             }
         } else {
             // Abono (pago): verificar que no supere la deuda actual
             if transaction.amount > customer.currentDebt {
-                throw NSError(domain: "PaymentError", code: 400,
-                              userInfo: [NSLocalizedDescriptionKey: "El abono no puede superar la deuda actual."])
+                throw AppError.paymentExceedsDebt
             }
         }
 

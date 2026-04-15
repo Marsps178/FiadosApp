@@ -5,13 +5,7 @@ struct DashboardCustomerRow: View {
     
     var body: some View {
         HStack {
-            Circle()
-                .fill(customer.isCloseToLimit ? .red.opacity(0.1) : .gray.opacity(0.1))
-                .frame(width: 45, height: 45)
-                .overlay(
-                    Image(systemName: "person.fill")
-                        .foregroundColor(customer.isCloseToLimit ? .red : .gray)
-                )
+            InitialsAvatar(name: customer.name)
             
             VStack(alignment: .leading) {
                 Text(customer.name)
@@ -28,7 +22,7 @@ struct DashboardCustomerRow: View {
                 .font(.callout.bold())
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
+        .background(AppTheme.cardBG)
+        .cornerRadius(AppTheme.radiusCard)
     }
 }

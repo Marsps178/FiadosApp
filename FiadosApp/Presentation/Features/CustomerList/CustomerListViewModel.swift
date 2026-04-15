@@ -16,12 +16,21 @@ class CustomerListViewModel {
         self.repository = repository
     }
     
-    // Filtro de búsqueda (HU-02)
+    enum SortOrder {
+        case name, debt
+    }
+    
+    var sortOrder: SortOrder = .name
+    
+    // Filtro de búsqueda (HU-02) y ordenamiento
     var filteredCustomers: [Customer] {
-        if searchText.isEmpty {
-            return customers
-        } else {
-            return customers.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        let filtered = searchText.isEmpty ? customers : customers.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        
+        switch sortOrder {
+        case .name:
+            return filtered.sorted { $0.name < $1.name }
+        case .debt:
+            return filtered.sorted { $0.currentDebt > $1.currentDebt }
         }
     }
     
@@ -36,6 +45,21 @@ class CustomerListViewModel {
         } catch {
             self.errorMessage = "Error al cargar clientes: \(error.localizedDescription)"
             isLoading = false
+        }
+    }
+    
+    @MainActor
+    func deleteCustomers(at offsets: IndexSet) async {
+        for index in offsets {
+            let customerId = filteredCustomers[index].id
+            do {
+                try await repository.deleteCustomer(customerId: customerId)
+                if let idx = customers.firstIndex(where: { $0.id == customerId }) {
+                    customers.remove(at: idx)
+                }
+            } catch {
+                self.errorMessage = "No se pudo eliminar: \(error.localizedDescription)"
+            }
         }
     }
 }

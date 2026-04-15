@@ -4,7 +4,9 @@ struct CustomerRowView: View {
     let customer: Customer
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
+            InitialsAvatar(name: customer.name, size: 40)
+            
             VStack(alignment: .leading, spacing: 4) {
                 Text(customer.name)
                     .font(.headline)
@@ -19,12 +21,12 @@ struct CustomerRowView: View {
                 Text(AppTheme.currency(customer.currentDebt))
                     .font(.body)
                     .bold()
-                    .foregroundColor(customer.isCloseToLimit ? .red : .primary)
+                    .foregroundColor(customer.isCloseToLimit ? AppTheme.danger : .primary)
                 
                 if customer.isCloseToLimit {
                     Text("Límite cerca")
                         .font(.caption2)
-                        .foregroundColor(.red)
+                        .foregroundColor(AppTheme.warning)
                 }
             }
         }

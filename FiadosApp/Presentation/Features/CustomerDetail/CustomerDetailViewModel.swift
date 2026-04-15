@@ -10,15 +10,18 @@ class CustomerDetailViewModel {
     
     // Dependencias
     private let transactionRepo: TransactionRepositoryProtocol
+    private let customerRepo: CustomerRepositoryProtocol
     private let registerUseCase: RegisterTransactionUseCase
     private let checkCreditUseCase: CheckCreditLimitUseCase
     
     init(customer: Customer,
          transactionRepo: TransactionRepositoryProtocol,
+         customerRepo: CustomerRepositoryProtocol,
          registerUseCase: RegisterTransactionUseCase,
          checkCreditUseCase: CheckCreditLimitUseCase = CheckCreditLimitUseCase()) {
         self.customer = customer
         self.transactionRepo = transactionRepo
+        self.customerRepo = customerRepo
         self.registerUseCase = registerUseCase
         self.checkCreditUseCase = checkCreditUseCase
     }
@@ -81,6 +84,26 @@ class CustomerDetailViewModel {
             self.errorMessage = error.localizedDescription
         }
 
+        isLoading = false
+    }
+    
+    @MainActor
+    func updateCreditLimit(newLimit: Double) async {
+        isLoading = true
+        errorMessage = nil
+        do {
+            try await customerRepo.updateCreditLimit(customerId: customer.id, newLimit: newLimit)
+            // Actualizar objeto local local para reflejar la UI
+            self.customer = Customer(
+                id: customer.id,
+                name: customer.name,
+                phoneNumber: customer.phoneNumber,
+                creditLimit: newLimit,
+                currentDebt: customer.currentDebt
+            )
+        } catch {
+            self.errorMessage = "No se pudo actualizar el límite: \(error.localizedDescription)"
+        }
         isLoading = false
     }
 }

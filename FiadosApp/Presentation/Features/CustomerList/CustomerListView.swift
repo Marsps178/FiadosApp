@@ -26,15 +26,32 @@ struct CustomerListView: View {
                         CustomerRowView(customer: customer)
                     }
                 }
+                .onDelete { indexSet in
+                    Task {
+                        await viewModel.deleteCustomers(at: indexSet)
+                    }
+                }
             }
         }
         .navigationTitle("Clientes")
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $viewModel.searchText, prompt: "Buscar cliente")
         .toolbar {
-            Button(action: { isShowingAddCustomer = true }) {
-                Image(systemName: "plus.circle.fill")
-                    .font(.title2)
+            ToolbarItem(placement: .topBarLeading) {
+                Menu {
+                    Picker("Ordenar por", selection: $viewModel.sortOrder) {
+                        Label("Nombre (A-Z)", systemImage: "textformat.abc").tag(CustomerListViewModel.SortOrder.name)
+                        Label("Mayor Deuda", systemImage: "dollarsign.circle").tag(CustomerListViewModel.SortOrder.debt)
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down")
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: { isShowingAddCustomer = true }) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2)
+                }
             }
         }
         .alert("Error", isPresented: .init(get: { viewModel.errorMessage != nil }, set: { _ in viewModel.errorMessage = nil })) {
