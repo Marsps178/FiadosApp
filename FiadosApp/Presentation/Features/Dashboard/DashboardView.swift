@@ -87,18 +87,17 @@ struct DashboardView: View {
         .refreshable {
             await viewModel.loadDashboard()
         }
-        .task {
-            await viewModel.loadDashboard()
+        .onAppear {
+            // onAppear se dispara tanto en la carga inicial como al regresar
+            // desde CustomerDetail o CustomerList via NavigationStack.
+            Task {
+                await viewModel.loadDashboard()
+            }
         }
         .alert("Error", isPresented: .init(get: { viewModel.errorMessage != nil }, set: { _ in viewModel.errorMessage = nil })) {
             Button("OK", role: .cancel) { }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
-        .onAppear {
-                Task {
-                    await viewModel.loadDashboard()
-                }
-            }
     }
 }

@@ -24,7 +24,7 @@ class FirebaseCustomerRepository: CustomerRepositoryProtocol {
 
     func saveCustomer(_ customer: Customer) async throws {
         let dto = customer.toDTO()
-        try db.collection(collectionName).document(customer.id).setData(from: dto)
+        try await db.collection(collectionName).document(customer.id).setData(from: dto)
     }
 
     func updateCustomerDebt(customerId: String, newDebt: Double) async throws {

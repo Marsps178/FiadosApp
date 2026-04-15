@@ -18,6 +18,6 @@ class FirebaseTransactionRepository: TransactionRepositoryProtocol {
 
     func addTransaction(_ transaction: DebtTransaction) async throws {
         let dto = transaction.toDTO()
-        try db.collection(collectionName).document(transaction.id).setData(from: dto)
+        try await db.collection(collectionName).document(transaction.id).setData(from: dto)
     }
 }

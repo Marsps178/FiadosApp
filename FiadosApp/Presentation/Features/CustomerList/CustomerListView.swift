@@ -30,7 +30,10 @@ struct CustomerListView: View {
         .task {
             await viewModel.loadCustomers()
         }
-        .sheet(isPresented: $isShowingAddCustomer) {
+        .sheet(isPresented: $isShowingAddCustomer, onDismiss: {
+            // Recargar lista cuando el sheet se cierra (cliente guardado o cancelado)
+            Task { await viewModel.loadCustomers() }
+        }) {
             AddCustomerView(viewModel: container.makeAddCustomerViewModel())
         }
     }
