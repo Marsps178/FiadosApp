@@ -13,6 +13,10 @@ final class DependencyContainer {
         FirebaseTransactionRepository()
     }()
     
+    private lazy var authRepository: AuthRepositoryProtocol = {
+        FirebaseAuthRepository()
+    }()
+    
     // 2. Casos de Uso (Capa de Dominio)
     // Los casos de uso reciben los repositorios a través de sus inicializadores.
     
@@ -29,6 +33,23 @@ final class DependencyContainer {
     
     func makeCheckCreditLimitUseCase() -> CheckCreditLimitUseCase {
         CheckCreditLimitUseCase()
+    }
+    
+    // Auth UseCases
+    func makeLoginUseCase() -> LoginUseCase {
+        LoginUseCase(repository: authRepository)
+    }
+    
+    func makeRegisterUseCase() -> RegisterUseCase {
+        RegisterUseCase(repository: authRepository)
+    }
+    
+    func makeLogoutUseCase() -> LogoutUseCase {
+        LogoutUseCase(repository: authRepository)
+    }
+    
+    func makeObserveAuthStateUseCase() -> ObserveAuthStateUseCase {
+        ObserveAuthStateUseCase(repository: authRepository)
     }
     
     // 3. Métodos para la gestión de clientes (CRUD)
@@ -59,7 +80,24 @@ final class DependencyContainer {
 
     func makeDashboardViewModel() -> DashboardViewModel {
         DashboardViewModel(
-            getStatsUseCase: makeGetDashboardStatsUseCase()
+            getStatsUseCase: makeGetDashboardStatsUseCase(),
+            logoutUseCase: makeLogoutUseCase()
+        )
+    }
+    
+    // Auth ViewModels
+    func makeLoginViewModel() -> LoginViewModel {
+        LoginViewModel(loginUseCase: makeLoginUseCase())
+    }
+    
+    func makeRegisterViewModel() -> RegisterViewModel {
+        RegisterViewModel(registerUseCase: makeRegisterUseCase())
+    }
+    
+    func makeGlobalAuthViewModel() -> GlobalAuthViewModel {
+        GlobalAuthViewModel(
+            observeUseCase: makeObserveAuthStateUseCase(),
+            logoutUseCase: makeLogoutUseCase()
         )
     }
 }

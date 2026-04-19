@@ -14,15 +14,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct FiadosAppApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     let container = DependencyContainer()
+    @State private var globalAuthViewModel: GlobalAuthViewModel
+
+    init() {
+        let dc = DependencyContainer()
+        self.container = dc
+        _globalAuthViewModel = State(initialValue: dc.makeGlobalAuthViewModel())
+    }
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                DashboardView(
-                    viewModel: container.makeDashboardViewModel(),
-                    container: container
-                )
-            }
+            RootView(authViewModel: globalAuthViewModel, container: container)
         }
     }
 }

@@ -11,9 +11,11 @@ class DashboardViewModel {
     
     // Dependencia
     private let getStatsUseCase: GetDashboardStatsUseCase
+    private let logoutUseCase: LogoutUseCase
     
-    init(getStatsUseCase: GetDashboardStatsUseCase) {
+    init(getStatsUseCase: GetDashboardStatsUseCase, logoutUseCase: LogoutUseCase) {
         self.getStatsUseCase = getStatsUseCase
+        self.logoutUseCase = logoutUseCase
     }
     
     @MainActor
@@ -29,6 +31,14 @@ class DashboardViewModel {
         } catch {
             self.errorMessage = "No se pudieron cargar las estadísticas."
             isLoading = false
+        }
+    }
+    
+    func logout() {
+        do {
+            try logoutUseCase.execute()
+        } catch {
+            self.errorMessage = "Error al cerrar sesión."
         }
     }
 }

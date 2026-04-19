@@ -99,5 +99,15 @@ struct DashboardView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    viewModel.logout()
+                }) {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                        .foregroundColor(AppTheme.danger)
+                }
+            }
+        }
     }
 }
