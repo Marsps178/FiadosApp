@@ -28,10 +28,13 @@ class FirebaseCustomerRepository: CustomerRepositoryProtocol {
     }
 
     func updateCustomerDebt(customerId: String, newDebt: Double) async throws {
+        // FIX: updateData() lanza error si el documento no existe.
+        // setData(merge:true) creaba silenciosamente documentos-fantasma
+        // con solo el campo 'debt' cuando el customerId no concordaba.
         let docRef = db.collection("customers").document(customerId)
-        try await docRef.setData([
+        try await docRef.updateData([
             "debt": newDebt
-        ], merge: true)
+        ])
     }
 
     func updateCreditLimit(customerId: String, newLimit: Double) async throws {
