@@ -1,12 +1,18 @@
 import Foundation
 import FirebaseFirestore
+import FirebaseAuth
 
 class FirebaseCustomerRepository: CustomerRepositoryProtocol {
     private let db = FirebaseManager.shared.db
     private let collectionName = "customers"
 
     func fetchCustomers() async throws -> [Customer] {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            return [] // Si no hay usuario logueado, protegemos el acceso devolviendo vacío
+        }
+        
         let snapshot = try await db.collection(collectionName)
+            .whereField("userId", isEqualTo: userId)
             .order(by: "name")
             .getDocuments()
         
@@ -23,7 +29,11 @@ class FirebaseCustomerRepository: CustomerRepositoryProtocol {
     }
 
     func saveCustomer(_ customer: Customer) async throws {
-        let dto = customer.toDTO()
+        guard let userId = Auth.auth().currentUser?.uid else {
+            throw NSError(domain: "Auth", code: 401, userInfo: [NSLocalizedDescriptionKey: "Usuario no autenticado"])
+        }
+        var dto = customer.toDTO()
+        dto.userId = userId // Inyectamos el ID del dueño
         try await db.collection(collectionName).document(customer.id).setData(from: dto)
     }
 
@@ -44,6 +54,23 @@ class FirebaseCustomerRepository: CustomerRepositoryProtocol {
     }
     
     func deleteCustomer(customerId: String) async throws {
-        try await db.collection(collectionName).document(customerId).delete()
+        // BUG FIX #2: Eliminar transacciones huérfanas en cascada
+        let transactionsSnapshot = try await db.collection("transactions")
+            .whereField("customerId", isEqualTo: customerId)
+            .getDocuments()
+            
+        let batch = db.batch()
+        
+        // Agregar transacciones al batch
+        for doc in transactionsSnapshot.documents {
+            batch.deleteDocument(doc.reference)
+        }
+        
+        // Agregar cliente al batch
+        let customerRef = db.collection(collectionName).document(customerId)
+        batch.deleteDocument(customerRef)
+        
+        // Ejecutar el commit
+        try await batch.commit()
     }
 }
