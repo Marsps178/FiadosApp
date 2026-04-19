@@ -21,8 +21,6 @@ struct DashboardCustomerRow: View {
                 .foregroundColor(customer.isCloseToLimit ? .red : .primary)
                 .font(.callout.bold())
         }
-        .padding()
-        .background(AppTheme.cardBG)
-        .cornerRadius(AppTheme.radiusCard)
+        .cardStyle()
     }
 }

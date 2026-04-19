@@ -10,14 +10,18 @@ struct EditCreditLimitView: View {
         NavigationStack {
             Form {
                 Section(header: Text("Ajustar Límite de Crédito ($)"), footer: Text("El límite actual es \(AppTheme.currency(viewModel.customer.creditLimit)). No puedes reducirlo a un valor menor a su deuda activa (\(AppTheme.currency(viewModel.customer.currentDebt))).")) {
-                    TextField("Nuevo límite", text: $newLimit)
+                    TextField("0.00", text: $newLimit)
                         .keyboardType(.decimalPad)
+                        .font(.system(size: 40, weight: .bold, design: .rounded))
+                        .foregroundColor(AppTheme.primary)
+                        .multilineTextAlignment(.center)
+                        .padding(.vertical, 10)
                 }
                 
                 if let value = Double(newLimit), value < viewModel.customer.currentDebt {
                     Text("El nuevo límite no puede ser menor a la deuda actual.")
                         .font(.caption)
-                        .foregroundColor(.red)
+                        .foregroundColor(AppTheme.danger)
                 }
             }
             .navigationTitle("Editar Límite")

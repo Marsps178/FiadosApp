@@ -23,8 +23,10 @@ struct CustomerDetailView: View {
                             value: viewModel.customer.currentDebt,
                             total: viewModel.customer.creditLimit
                         )
+                        .scaleEffect(x: 1, y: 1.5, anchor: .center)
                         .tint(viewModel.customer.isCloseToLimit ? AppTheme.danger : AppTheme.primary)
-                        .animation(.easeInOut, value: viewModel.customer.currentDebt)
+                        .animation(.spring(response: 0.4, dampingFraction: 0.6), value: viewModel.customer.currentDebt)
+                        .padding(.vertical, 4)
 
                         HStack {
                             let pct = Int((viewModel.customer.currentDebt / viewModel.customer.creditLimit) * 100)
@@ -52,24 +54,31 @@ struct CustomerDetailView: View {
                     }
                     
                     ForEach(viewModel.transactions) { transaction in
-                        HStack {
-                            VStack(alignment: .leading) {
+                        HStack(spacing: 12) {
+                            ZStack {
+                                Circle()
+                                    .fill((transaction.type == .charge ? AppTheme.danger : AppTheme.success).opacity(0.12))
+                                    .frame(width: 44, height: 44)
+                                Image(systemName: transaction.type == .charge ? "arrow.up.right" : "arrow.down.left")
+                                    .foregroundColor(transaction.type == .charge ? AppTheme.danger : AppTheme.success)
+                                    .font(.system(size: 18, weight: .bold))
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 4) {
                                 Text(transaction.concept)
-                                    .font(.body)
+                                    .font(.system(size: 16, weight: .medium, design: .rounded))
                                 Text(transaction.date, style: .date)
-                                    .font(.caption2)
+                                    .font(.caption)
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
-                            HStack(spacing: 6) {
-                                Image(systemName: transaction.type == .charge ? "arrow.up.right.circle.fill" : "arrow.down.left.circle.fill")
-                                    .foregroundColor(transaction.type == .charge ? AppTheme.danger : AppTheme.success)
-                                
+                            VStack(alignment: .trailing, spacing: 2) {
                                 Text(transaction.type == .charge ? "+\(AppTheme.currency(transaction.amount))" : "-\(AppTheme.currency(transaction.amount))")
                                     .foregroundColor(transaction.type == .charge ? AppTheme.danger : AppTheme.success)
-                                    .bold()
+                                    .font(.system(size: 16, weight: .bold, design: .rounded))
                             }
                         }
+                        .padding(.vertical, 4)
                     }
                 }
             }

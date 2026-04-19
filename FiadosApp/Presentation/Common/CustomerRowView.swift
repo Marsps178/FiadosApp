@@ -24,12 +24,18 @@ struct CustomerRowView: View {
                     .foregroundColor(customer.isCloseToLimit ? AppTheme.danger : .primary)
                 
                 if customer.isCloseToLimit {
-                    Text("Límite cerca")
-                        .font(.caption2)
-                        .foregroundColor(AppTheme.warning)
+                    Text("⚠️ Límite cerca")
+                        .font(.caption2.bold())
+                        .foregroundColor(AppTheme.danger)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(AppTheme.danger.opacity(0.1))
+                        .cornerRadius(4)
                 }
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 8)
+        // Opcional: Para iOS 15+ listRowBackground puede usarse desde el padre,
+        // pero la celda en sí puede tener un padding mayor.
     }
 }

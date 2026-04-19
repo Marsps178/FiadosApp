@@ -57,7 +57,8 @@ struct CustomerListView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: { isShowingAddCustomer = true }) {
                     Image(systemName: "plus.circle.fill")
-                        .font(.title2)
+                        .font(.system(size: 24))
+                        .foregroundColor(AppTheme.primary)
                 }
             }
         }

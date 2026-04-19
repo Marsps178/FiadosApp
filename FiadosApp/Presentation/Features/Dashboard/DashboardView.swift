@@ -27,13 +27,13 @@ struct DashboardView: View {
                 .padding(.vertical, 30)
                 .background(
                     LinearGradient(
-                        gradient: Gradient(colors: [AppTheme.primary, AppTheme.primary.opacity(0.8)]),
+                        gradient: Gradient(colors: [AppTheme.primary, AppTheme.primaryDark]),
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
                 .cornerRadius(AppTheme.radiusCard)
-                .shadow(color: AppTheme.primary.opacity(0.3), radius: 10, x: 0, y: 5)
+                .shadow(color: AppTheme.primary.opacity(0.4), radius: 15, x: 0, y: 8)
                 
                 // --- SECCIÓN TOP DEUDORES (HU-08) ---
                 VStack(alignment: .leading, spacing: 15) {
