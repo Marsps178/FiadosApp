@@ -37,7 +37,13 @@ struct EditCreditLimitView: View {
                             }
                         }
                     }
-                    .disabled(Double(newLimit) == nil || (Double(newLimit) ?? 0) < viewModel.customer.currentDebt || viewModel.isLoading)
+                    // FIX #5: También desactivar si el valor ingresado es igual al límite actual
+                    .disabled(
+                        Double(newLimit) == nil ||
+                        (Double(newLimit) ?? 0) < viewModel.customer.currentDebt ||
+                        Double(newLimit) == viewModel.customer.creditLimit ||
+                        viewModel.isLoading
+                    )
                 }
             }
         }

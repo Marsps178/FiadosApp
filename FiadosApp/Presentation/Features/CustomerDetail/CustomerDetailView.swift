@@ -16,24 +16,28 @@ struct CustomerDetailView: View {
                     .font(.system(size: 40, weight: .bold, design: .rounded))
                     .foregroundColor(viewModel.customer.isCloseToLimit ? AppTheme.danger : .primary)
                 
-                VStack(alignment: .leading, spacing: 4) {
-                    ProgressView(
-                        value: viewModel.customer.currentDebt,
-                        total: viewModel.customer.creditLimit
-                    )
-                    .tint(viewModel.customer.isCloseToLimit ? AppTheme.danger : AppTheme.primary)
-                    .animation(.easeInOut, value: viewModel.customer.currentDebt)
-                
-                    HStack {
-                        Text("Usado: \(Int((viewModel.customer.currentDebt / viewModel.customer.creditLimit) * 100))%")
-                        Spacer()
-                        Text("Disponible: \(AppTheme.currency(viewModel.customer.availableCredit))")
-                            .foregroundColor(viewModel.customer.isCloseToLimit ? AppTheme.danger : .secondary)
+                // FIX #7: Guard creditLimit > 0 para evitar división por cero
+                if viewModel.customer.creditLimit > 0 {
+                    VStack(alignment: .leading, spacing: 4) {
+                        ProgressView(
+                            value: viewModel.customer.currentDebt,
+                            total: viewModel.customer.creditLimit
+                        )
+                        .tint(viewModel.customer.isCloseToLimit ? AppTheme.danger : AppTheme.primary)
+                        .animation(.easeInOut, value: viewModel.customer.currentDebt)
+
+                        HStack {
+                            let pct = Int((viewModel.customer.currentDebt / viewModel.customer.creditLimit) * 100)
+                            Text("Usado: \(pct)%")
+                            Spacer()
+                            Text("Disponible: \(AppTheme.currency(viewModel.customer.availableCredit))")
+                                .foregroundColor(viewModel.customer.isCloseToLimit ? AppTheme.danger : .secondary)
+                        }
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
                     }
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
             }
             .padding()
             .background(AppTheme.cardBG)
@@ -92,8 +96,10 @@ struct CustomerDetailView: View {
         .sheet(isPresented: $isShowingEditLimit) {
             EditCreditLimitView(viewModel: viewModel)
         }
-        .task {
-            await viewModel.loadTransactions()
+        // FIX #3: onAppear en lugar de .task para recargar transacciones
+        // cada vez que la vista aparece (incluido regresar de AddTransactionView).
+        .onAppear {
+            Task { await viewModel.loadTransactions() }
         }
     }
 }

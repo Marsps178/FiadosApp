@@ -1,18 +1,18 @@
 import SwiftUI
 
 struct AddTransactionView: View {
-    @Bindable var viewModel: CustomerDetailViewModel // Usamos @Bindable para SwiftUI 17+
+    @Bindable var viewModel: CustomerDetailViewModel
     @Environment(\.dismiss) var dismiss
-    
+
     @State private var amount: String = ""
     @State private var concept: String = ""
     @State private var selectedType: TransactionType = .charge
-    
+
     // Validación local de UI
     var isFormValid: Bool {
         guard let value = Double(amount), value > 0 else { return false }
         if concept.trimmingCharacters(in: .whitespaces).isEmpty { return false }
-        
+
         // Regla HU-05: El abono no puede ser mayor a la deuda
         if selectedType == .credit && value > viewModel.customer.currentDebt {
             return false
@@ -21,7 +21,10 @@ struct AddTransactionView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        // FIX #8: Eliminado NavigationStack interno redundante.
+        // .sheet ya provee su propio contexto de navegación en iOS 16+.
+        // El stack anidado causaba conflictos en iPad y comportamiento inesperado.
+        NavigationView {
             Form {
                 Section(header: Text("Tipo de Operación")) {
                     Picker("Tipo", selection: $selectedType) {
@@ -30,18 +33,20 @@ struct AddTransactionView: View {
                     }
                     .pickerStyle(.segmented)
                 }
-                
+
                 Section(header: Text("Detalles")) {
                     TextField("Monto ($)", text: $amount)
                         .keyboardType(.decimalPad)
-                    
+
                     TextField("Concepto (ej. Pan, Leche, Pago semana)", text: $concept)
                 }
-                
+
                 if selectedType == .credit && (Double(amount) ?? 0) > viewModel.customer.currentDebt {
-                    Text("El abono no puede superar la deuda actual.")
-                        .font(.caption)
-                        .foregroundColor(.red)
+                    Section {
+                        Text("El abono no puede superar la deuda actual de \(AppTheme.currency(viewModel.customer.currentDebt)).")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                    }
                 }
             }
             .navigationTitle("Registrar Movimiento")
