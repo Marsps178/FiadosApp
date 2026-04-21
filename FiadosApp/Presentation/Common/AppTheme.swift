@@ -92,5 +92,38 @@ extension View {
     func primaryButtonStyle(isDisabled: Bool = false) -> some View {
         self.modifier(PrimaryButtonModifier(isDisabled: isDisabled))
     }
+    
+    func skeleton(isLoading: Bool) -> some View {
+        self.modifier(SkeletonModifier(isLoading: isLoading))
+    }
+}
+
+struct SkeletonModifier: ViewModifier {
+    var isLoading: Bool
+    @State private var phase: Double = 0
+    
+    func body(content: Content) -> some View {
+        if isLoading {
+            content
+                .redacted(reason: .placeholder)
+                .overlay(
+                    LinearGradient(
+                        colors: [.clear, .white.opacity(0.3), .clear],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                    .frame(width: 200)
+                    .offset(x: -200 + (phase * 400))
+                )
+                .onAppear {
+                    withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+                        phase = 1
+                    }
+                }
+                .mask(content)
+        } else {
+            content
+        }
+    }
 }
 

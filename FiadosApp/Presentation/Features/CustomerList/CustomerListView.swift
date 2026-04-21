@@ -8,8 +8,11 @@ struct CustomerListView: View {
     
     var body: some View {
         List {
-            if viewModel.isLoading {
-                ProgressView("Cargando clientes...")
+            if viewModel.isLoading && viewModel.filteredCustomers.isEmpty {
+                ForEach(0..<6, id: \.self) { _ in
+                    CustomerRowView(customer: Customer(id: UUID().uuidString, name: "Cargando nombre...", phoneNumber: "", creditLimit: 0, currentDebt: 0))
+                        .skeleton(isLoading: true)
+                }
             } else if viewModel.filteredCustomers.isEmpty {
                 if viewModel.searchText.isEmpty {
                     ContentUnavailableView(

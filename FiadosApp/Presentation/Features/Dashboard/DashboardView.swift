@@ -21,16 +21,11 @@ struct DashboardView: View {
                     }
                     .foregroundColor(.white.opacity(0.8))
                     
-                    if viewModel.isLoading {
-                        ProgressView()
-                            .tint(.white)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    } else {
-                        Text(AppTheme.currency(viewModel.totalDebt))
-                            .font(.system(size: 48, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
+                    Text(AppTheme.currency(viewModel.totalDebt))
+                        .font(.system(size: 48, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .skeleton(isLoading: viewModel.isLoading)
                     
                     HStack {
                         Text("Dinero en la calle")
@@ -45,6 +40,7 @@ struct DashboardView: View {
                 .background(AppTheme.primaryGradient)
                 .cornerRadius(AppTheme.radiusCard)
                 .shadow(color: AppTheme.primary.opacity(0.3), radius: 20, x: 0, y: 10)
+                .animation(.easeInOut, value: viewModel.isLoading)
                 
                 // --- GRÁFICO DE DEUDAS (HU adicional) ---
                 if !viewModel.topDebtors.isEmpty {
@@ -110,14 +106,18 @@ struct DashboardView: View {
                         .cardStyle()
                     } else {
                         VStack(spacing: 12) {
-                            ForEach(viewModel.topDebtors) { customer in
+                            let displayList = viewModel.isLoading ? [Customer(id: "1", name: "Cargando Nombre", phoneNumber: "", creditLimit: 100, currentDebt: 50), Customer(id: "2", name: "Cargando Nombre", phoneNumber: "", creditLimit: 100, currentDebt: 50)] : viewModel.topDebtors
+                            
+                            ForEach(displayList) { customer in
                                 NavigationLink(value: AppRoute.customerDetail(customer)) {
                                     DashboardCustomerRow(customer: customer)
                                         .padding(.vertical, 4)
+                                        .skeleton(isLoading: viewModel.isLoading)
                                 }
                                 .buttonStyle(.plain)
+                                .disabled(viewModel.isLoading)
                                 
-                                if customer.id != viewModel.topDebtors.last?.id {
+                                if customer.id != displayList.last?.id {
                                     Divider().opacity(0.5)
                                 }
                             }
@@ -125,6 +125,7 @@ struct DashboardView: View {
                         .padding()
                         .background(AppTheme.cardBG)
                         .cornerRadius(AppTheme.radiusCard)
+                        .animation(.spring(), value: viewModel.isLoading)
                     }
                 }
             }
