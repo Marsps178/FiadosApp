@@ -4,23 +4,24 @@ struct DashboardCustomerRow: View {
     let customer: Customer
     
     var body: some View {
-        HStack {
-            InitialsAvatar(name: customer.name)
+        HStack(spacing: 12) {
+            InitialsAvatar(name: customer.name, size: 40)
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(customer.name)
-                    .font(.body.bold())
+                    .font(.system(size: 15, weight: .bold, design: .rounded))
                 Text("Límite: \(AppTheme.currency(customer.creditLimit))")
-                    .font(.caption)
+                    .font(.system(size: 11))
                     .foregroundColor(.secondary)
             }
             
             Spacer()
             
             Text(AppTheme.currency(customer.currentDebt))
-                .foregroundColor(customer.isCloseToLimit ? .red : .primary)
-                .font(.callout.bold())
+                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .foregroundColor(customer.isCloseToLimit ? AppTheme.danger : .primary)
         }
-        .cardStyle()
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
     }
 }
