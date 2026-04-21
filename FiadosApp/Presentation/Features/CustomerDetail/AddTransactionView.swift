@@ -21,81 +21,158 @@ struct AddTransactionView: View {
     }
 
     var body: some View {
-        // FIX #8: Eliminado NavigationStack interno redundante.
-        // .sheet ya provee su propio contexto de navegación en iOS 16+.
-        // El stack anidado causaba conflictos en iPad y comportamiento inesperado.
-        NavigationView {
-            Form {
-                Section(header: Text("Tipo de Operación")) {
-                    Picker("Tipo", selection: $selectedType) {
-                        Text("Fiado (Cargo)").tag(TransactionType.charge)
-                        Text("Pago (Abono)").tag(TransactionType.credit)
-                    }
-                    .pickerStyle(.segmented)
-                    .colorMultiply(selectedType == .charge ? AppTheme.danger : AppTheme.success)
-                }
-
-                Section(header: Text("Detalles")) {
-                    TextField("Monto (S/)", text: $amount)
-                        .keyboardType(.decimalPad)
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
-                        .foregroundColor(selectedType == .charge ? AppTheme.danger : AppTheme.success)
-                        .multilineTextAlignment(.center)
-                        .padding(.vertical, 10)
-
-                    VStack(alignment: .leading, spacing: 12) {
-                        TextField("Concepto", text: $concept)
-                            .font(.body)
-                        
-                        // Chips de Acceso Rápido
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
-                                let chips = selectedType == .charge ? ["Varios", "Semana", "Consumo", "Pan/Leche"] : ["Abono efectivo", "Yape/Plin", "Transferencia"]
+        NavigationStack {
+            ZStack {
+                AppTheme.background.ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // Card de Selección de Tipo
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("TIPO DE OPERACIÓN")
+                                .font(.caption2.bold())
+                                .tracking(1)
+                                .foregroundColor(.secondary)
+                            
+                            HStack(spacing: 0) {
+                                Button(action: { selectedType = .charge }) {
+                                    Text("Fiado (Cargo)")
+                                        .font(.subheadline.bold())
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 12)
+                                        .background(selectedType == .charge ? AppTheme.danger : Color.clear)
+                                        .foregroundColor(selectedType == .charge ? .white : .primary)
+                                }
                                 
-                                ForEach(chips, id: \.self) { chip in
-                                    Button(action: {
-                                        HapticManager.selection()
-                                        concept = chip
-                                    }) {
-                                        Text(chip)
-                                            .font(.caption.bold())
-                                            .padding(.horizontal, 12)
-                                            .padding(.vertical, 6)
-                                            .background(selectedType == .charge ? AppTheme.danger.opacity(0.1) : AppTheme.success.opacity(0.1))
-                                            .foregroundColor(selectedType == .charge ? AppTheme.danger : AppTheme.success)
-                                            .cornerRadius(20)
+                                Button(action: { selectedType = .credit }) {
+                                    Text("Pago (Abono)")
+                                        .font(.subheadline.bold())
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 12)
+                                        .background(selectedType == .credit ? AppTheme.success : Color.clear)
+                                        .foregroundColor(selectedType == .credit ? .white : .primary)
+                                }
+                            }
+                            .background(Color.secondary.opacity(0.1))
+                            .cornerRadius(12)
+                            .animation(.spring(response: 0.3), value: selectedType)
+                        }
+                        .padding()
+                        .background(AppTheme.cardBG)
+                        .cornerRadius(AppTheme.radiusCard)
+                        
+                        // Card de Monto y Concepto
+                        VStack(spacing: 20) {
+                            VStack(spacing: 8) {
+                                Text("MONTO A REGISTRAR")
+                                    .font(.caption2.bold())
+                                    .tracking(1)
+                                    .foregroundColor(.secondary)
+                                
+                                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                                    Text("S/")
+                                        .font(.title2.bold())
+                                        .foregroundColor(selectedType == .charge ? AppTheme.danger : AppTheme.success)
+                                    
+                                    TextField("0.00", text: $amount)
+                                        .keyboardType(.decimalPad)
+                                        .font(.system(size: 54, weight: .bold, design: .rounded))
+                                        .foregroundColor(selectedType == .charge ? AppTheme.danger : AppTheme.success)
+                                        .fixedSize()
+                                }
+                            }
+                            .padding(.vertical, 10)
+                            
+                            Divider()
+                            
+                            VStack(alignment: .leading, spacing: 12) {
+                                TextField("Concepto de la operación", text: $concept)
+                                    .font(.body)
+                                    .padding()
+                                    .background(Color.secondary.opacity(0.05))
+                                    .cornerRadius(12)
+                                
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 8) {
+                                        let chips = selectedType == .charge ? ["Varios", "Semana", "Consumo", "Pan/Leche"] : ["Abono efectivo", "Yape/Plin", "Transferencia"]
+                                        ForEach(chips, id: \.self) { chip in
+                                            Button(action: {
+                                                HapticManager.selection()
+                                                concept = chip
+                                            }) {
+                                                Text(chip)
+                                                    .font(.caption.bold())
+                                                    .padding(.horizontal, 16)
+                                                    .padding(.vertical, 8)
+                                                    .background(selectedType == .charge ? AppTheme.danger.opacity(0.1) : AppTheme.success.opacity(0.1))
+                                                    .foregroundColor(selectedType == .charge ? AppTheme.danger : AppTheme.success)
+                                                    .cornerRadius(20)
+                                            }
+                                        }
                                     }
                                 }
                             }
-                            .padding(.vertical, 4)
+                        }
+                        .padding()
+                        .background(AppTheme.cardBG)
+                        .cornerRadius(AppTheme.radiusCard)
+                        
+                        // Vista Previa de Impacto
+                        if let value = Double(amount), value > 0 {
+                            VStack(spacing: 12) {
+                                Text("VISTA PREVIA DE SALDO")
+                                    .font(.caption2.bold())
+                                    .tracking(1)
+                                    .foregroundColor(.secondary)
+                                
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text("Actual")
+                                            .font(.caption)
+                                        Text(AppTheme.currency(viewModel.customer.currentDebt))
+                                            .font(.body.bold())
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "arrow.right")
+                                        .foregroundColor(.secondary)
+                                    
+                                    Spacer()
+                                    
+                                    VStack(alignment: .trailing) {
+                                        let newDebt = selectedType == .charge ? viewModel.customer.currentDebt + value : viewModel.customer.currentDebt - value
+                                        Text("Nuevo Saldo")
+                                            .font(.caption)
+                                        Text(AppTheme.currency(newDebt))
+                                            .font(.title3.bold())
+                                            .foregroundColor(newDebt > viewModel.customer.creditLimit ? AppTheme.danger : .primary)
+                                    }
+                                }
+                                
+                                if selectedType == .charge && (viewModel.customer.currentDebt + value) > viewModel.customer.creditLimit {
+                                    HStack {
+                                        Image(systemName: "exclamationmark.triangle.fill")
+                                        Text("¡Atención! Supera el límite de crédito")
+                                    }
+                                    .font(.caption.bold())
+                                    .foregroundColor(AppTheme.danger)
+                                    .padding(.top, 4)
+                                }
+                            }
+                            .padding()
+                            .background((selectedType == .charge && (viewModel.customer.currentDebt + value) > viewModel.customer.creditLimit) ? AppTheme.danger.opacity(0.05) : Color.secondary.opacity(0.05))
+                            .cornerRadius(AppTheme.radiusCard)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
                     }
+                    .padding()
                 }
-
-                if selectedType == .credit && (Double(amount) ?? 0) > viewModel.customer.currentDebt {
-                    Section {
-                        Text("El abono no puede superar la deuda actual de \(AppTheme.currency(viewModel.customer.currentDebt)).")
-                            .font(.caption)
-                            .foregroundColor(.red)
-                    }
-                }
-            }
-            .navigationTitle("Registrar Movimiento")
-            .navigationBarTitleDisplayMode(.inline)
-            .onChange(of: selectedType) { _, newValue in
-                HapticManager.selection()
-                if newValue == .credit {
-                    concept = "Abono a cuenta"
-                } else if concept == "Abono a cuenta" {
-                    concept = ""
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Confirmar") {
+                
+                // Botón de Confirmación Flotante o al Final
+                VStack {
+                    Spacer()
+                    Button(action: {
                         if let value = Double(amount) {
                             Task {
                                 await viewModel.addTransaction(amount: value, concept: concept, type: selectedType)
@@ -105,8 +182,31 @@ struct AddTransactionView: View {
                                 }
                             }
                         }
+                    }) {
+                        if viewModel.isLoading {
+                            ProgressView().tint(.white)
+                        } else {
+                            Text("Confirmar \(selectedType == .charge ? "Cargo" : "Abono")")
+                        }
                     }
-                    .disabled(!isFormValid || viewModel.isLoading)
+                    .primaryButtonStyle(isDisabled: !isFormValid || viewModel.isLoading)
+                    .padding()
+                    .background(AppTheme.background)
+                }
+            }
+            .navigationTitle("Nuevo Movimiento")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar") { dismiss() }
+                }
+            }
+            .onChange(of: selectedType) { _, newValue in
+                HapticManager.selection()
+                if newValue == .credit {
+                    concept = "Abono a cuenta"
+                } else if concept == "Abono a cuenta" {
+                    concept = ""
                 }
             }
             .alert("Error", isPresented: .init(get: { viewModel.errorMessage != nil }, set: { _ in viewModel.errorMessage = nil })) {
