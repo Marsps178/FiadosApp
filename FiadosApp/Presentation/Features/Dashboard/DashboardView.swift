@@ -127,34 +127,10 @@ struct DashboardView: View {
                         .cornerRadius(AppTheme.radiusCard)
                     }
                 }
-                
-                // --- BOTÓN DE ACCIÓN PRINCIPAL ---
-                NavigationLink(value: AppRoute.customerList) {
-                    HStack {
-                        Image(systemName: "person.2.badge.gearshape.fill")
-                        Text("Gestionar Cartera de Clientes")
-                    }
-                    .primaryButtonStyle()
-                }
-                .padding(.top, 10)
             }
             .padding()
         }
         .navigationTitle("Inicio")
-        // --- CENTRALIZACIÓN DE NAVEGACIÓN ---
-        .navigationDestination(for: AppRoute.self) { route in
-            switch route {
-            case .customerList:
-                CustomerListView(
-                    viewModel: container.makeCustomerListViewModel(),
-                    container: container
-                )
-            case .customerDetail(let customer):
-                CustomerDetailView(viewModel: container.makeCustomerDetailViewModel(customer: customer))
-            case .settings:
-                SettingsView(authViewModel: authViewModel)
-            }
-        }
         .refreshable {
             await viewModel.loadDashboard()
         }
@@ -169,20 +145,6 @@ struct DashboardView: View {
             Button("OK", role: .cancel) { }
         } message: {
             Text(viewModel.errorMessage ?? "")
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    HapticManager.selection()
-                    // Navegar a Configuración en lugar de logout directo
-                }) {
-                    NavigationLink(value: AppRoute.settings) {
-                        Image(systemName: "person.circle.fill")
-                            .font(.title3)
-                            .foregroundColor(AppTheme.primary)
-                    }
-                }
-            }
         }
     }
 }
