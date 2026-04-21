@@ -51,7 +51,7 @@ struct DashboardView: View {
                         ForEach(viewModel.topDebtors) { customer in
                             // Envolvemos cada fila en un NavigationLink(value:)
                             // Esto dispara el .navigationDestination de abajo
-                            NavigationLink(value: customer) {
+                            NavigationLink(value: AppRoute.customerDetail(customer)) {
                                 DashboardCustomerRow(customer: customer)
                             }
                             .buttonStyle(.plain) // Para que no se vea azul todo el renglón
@@ -60,10 +60,7 @@ struct DashboardView: View {
                 }
                 
                 // --- BOTÓN DE ACCIÓN PRINCIPAL ---
-                NavigationLink(destination: CustomerListView(
-                    viewModel: container.makeCustomerListViewModel(),
-                    container: container
-                )) {
+                NavigationLink(value: AppRoute.customerList) {
                     HStack {
                         Image(systemName: "person.3.fill")
                         Text("Gestionar Clientes")
@@ -81,8 +78,16 @@ struct DashboardView: View {
         }
         .navigationTitle("Inicio")
         // --- CENTRALIZACIÓN DE NAVEGACIÓN ---
-        .navigationDestination(for: Customer.self) { customer in
-            CustomerDetailView(viewModel: container.makeCustomerDetailViewModel(customer: customer))
+        .navigationDestination(for: AppRoute.self) { route in
+            switch route {
+            case .customerList:
+                CustomerListView(
+                    viewModel: container.makeCustomerListViewModel(),
+                    container: container
+                )
+            case .customerDetail(let customer):
+                CustomerDetailView(viewModel: container.makeCustomerDetailViewModel(customer: customer))
+            }
         }
         .refreshable {
             await viewModel.loadDashboard()

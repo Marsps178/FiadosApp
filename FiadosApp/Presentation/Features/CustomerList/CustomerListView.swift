@@ -22,7 +22,7 @@ struct CustomerListView: View {
                 }
             } else {
                 ForEach(viewModel.filteredCustomers) { customer in
-                    NavigationLink(value: customer) {
+                    NavigationLink(value: AppRoute.customerDetail(customer)) {
                         CustomerRowView(customer: customer)
                     }
                 }
@@ -36,13 +36,6 @@ struct CustomerListView: View {
         .navigationTitle("Clientes")
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $viewModel.searchText, prompt: "Buscar cliente")
-        // FIX: Registrar el destino aquí para que NavigationLink(value: customer)
-        // encuentre el handler correcto sin tener que subir hasta DashboardView.
-        // Mezclar NavigationLink(destination:) con NavigationLink(value:) en el
-        // mismo stack causaba que la navegación pop+push devolviera a la lista.
-        .navigationDestination(for: Customer.self) { customer in
-            CustomerDetailView(viewModel: container.makeCustomerDetailViewModel(customer: customer))
-        }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Menu {

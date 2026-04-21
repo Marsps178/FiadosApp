@@ -167,7 +167,7 @@ FiadosAppApp (NavigationStack raíz)
                                                         └── [Sheet] → AddTransactionView
 ```
 
-> **Nota:** La navegación a `CustomerDetailView` está centralizada en la raíz del `NavigationStack` mediante `.navigationDestination(for: Customer.self)`, evitando duplicación de lógica.
+> **Nota:** La navegación está centralizada en la raíz del `NavigationStack` en `DashboardView` mediante `.navigationDestination(for: AppRoute.self)`, evitando duplicación de lógica y conflictos de stack.
 
 ---
 
