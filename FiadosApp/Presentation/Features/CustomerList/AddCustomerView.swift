@@ -34,9 +34,10 @@ struct AddCustomerView: View {
                     if viewModel.isLoading {
                         ProgressView()
                     } else {
-                        Button("Guardar") {
+                        Button("Guardar Cliente") {
                             Task { await viewModel.saveCustomer() }
                         }
+                        .fontWeight(.bold)
                         .disabled(!viewModel.isFormValid)
                     }
                 }

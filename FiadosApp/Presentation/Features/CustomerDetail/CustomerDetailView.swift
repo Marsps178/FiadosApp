@@ -8,61 +8,103 @@ struct CustomerDetailView: View {
     var body: some View {
         VStack {
             // Header con resumen de deuda
-            VStack(spacing: 8) {
+            VStack(spacing: 16) {
                 HStack {
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 4) {
                         Text(viewModel.customer.name)
-                            .font(.title3.bold())
+                            .font(.title2.bold())
                         if !viewModel.customer.phoneNumber.isEmpty {
                             Link(destination: URL(string: "tel:\(viewModel.customer.phoneNumber)")!) {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "phone.fill")
+                                HStack(spacing: 6) {
+                                    Image(systemName: "phone.circle.fill")
                                     Text(viewModel.customer.phoneNumber)
                                 }
-                                .font(.caption)
+                                .font(.subheadline.weight(.medium))
                                 .foregroundColor(AppTheme.primary)
                             }
                         }
                     }
                     Spacer()
+                    
+                    InitialsAvatar(name: viewModel.customer.name, size: 50)
                 }
-                .padding(.bottom, 10)
                 
-                Text("Deuda Actual")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Text(AppTheme.currency(viewModel.customer.currentDebt))
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
-                    .foregroundColor(viewModel.customer.isCloseToLimit ? AppTheme.danger : .primary)
+                Divider()
+                
+                VStack(spacing: 8) {
+                    Text("DEUDA ACTUAL")
+                        .font(.caption2.bold())
+                        .tracking(1)
+                        .foregroundColor(.secondary)
+                    
+                    Text(AppTheme.currency(viewModel.customer.currentDebt))
+                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                        .foregroundColor(viewModel.customer.isCloseToLimit ? AppTheme.danger : .primary)
+                }
+                .padding(.vertical, 8)
                 
                 // FIX #7: Guard creditLimit > 0 para evitar división por cero
                 if viewModel.customer.creditLimit > 0 {
-                    VStack(alignment: .leading, spacing: 4) {
-                        ProgressView(
-                            value: viewModel.customer.currentDebt,
-                            total: viewModel.customer.creditLimit
-                        )
-                        .scaleEffect(x: 1, y: 1.5, anchor: .center)
-                        .tint(viewModel.customer.isCloseToLimit ? AppTheme.danger : AppTheme.primary)
-                        .animation(.spring(response: 0.4, dampingFraction: 0.6), value: viewModel.customer.currentDebt)
-                        .padding(.vertical, 4)
+                    VStack(alignment: .leading, spacing: 10) {
+                        GeometryReader { geo in
+                            ZStack(alignment: .leading) {
+                                Capsule()
+                                    .fill(Color.secondary.opacity(0.1))
+                                    .frame(height: 12)
+                                
+                                Capsule()
+                                    .fill(viewModel.customer.isCloseToLimit ? AppTheme.danger.gradient : AppTheme.primary.gradient)
+                                    .frame(width: min(geo.size.width * CGFloat(viewModel.customer.currentDebt / viewModel.customer.creditLimit), geo.size.width), height: 12)
+                                    .animation(.spring(response: 0.6, dampingFraction: 0.7), value: viewModel.customer.currentDebt)
+                            }
+                        }
+                        .frame(height: 12)
 
                         HStack {
                             let pct = Int((viewModel.customer.currentDebt / viewModel.customer.creditLimit) * 100)
-                            Text("Usado: \(pct)%")
-                            Spacer()
-                            Text("Disponible: \(AppTheme.currency(viewModel.customer.availableCredit))")
+                            Text("\(pct)% del límite utilizado")
+                                .font(.caption.bold())
                                 .foregroundColor(viewModel.customer.isCloseToLimit ? AppTheme.danger : .secondary)
+                            Spacer()
+                            Text("Límite: \(AppTheme.currency(viewModel.customer.creditLimit))")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
                     }
-                    .padding(.horizontal)
+                }
+                
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading) {
+                        Text("DISPONIBLE")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.secondary)
+                        Text(AppTheme.currency(viewModel.customer.availableCredit))
+                            .font(.subheadline.bold())
+                            .foregroundColor(AppTheme.success)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(12)
+                    .background(AppTheme.success.opacity(0.05))
+                    .cornerRadius(12)
+                    
+                    VStack(alignment: .leading) {
+                        Text("ESTADO")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.secondary)
+                        Text(viewModel.customer.isCloseToLimit ? "Riesgo Alto" : "Saludable")
+                            .font(.subheadline.bold())
+                            .foregroundColor(viewModel.customer.isCloseToLimit ? AppTheme.danger : AppTheme.success)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(12)
+                    .background((viewModel.customer.isCloseToLimit ? AppTheme.danger : AppTheme.success).opacity(0.05))
+                    .cornerRadius(12)
                 }
             }
-            .padding()
+            .padding(20)
             .background(AppTheme.cardBG)
             .cornerRadius(AppTheme.radiusCard)
+            .shadow(color: Color.black.opacity(0.05), radius: 15, x: 0, y: 5)
             .padding()
 
             // Lista de transacciones

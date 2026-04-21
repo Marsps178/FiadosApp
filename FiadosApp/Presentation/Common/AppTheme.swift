@@ -27,20 +27,29 @@ extension Color {
 }
 
 enum AppTheme {
-    // Colores semánticos basados en el Design System (Stitch)
-    static let primary     = Color(hex: "#4F46E5") // Vibrant Indigo
-    static let primaryDark = Color(hex: "#4338CA")
-    static let danger      = Color(hex: "#EF4444") // Red
-    static let success     = Color(hex: "#10B981") // Green
-    static let warning     = Color(hex: "#F59E0B") // Orange
+    // Modern "FinTech" Palette
+    static let primary     = Color(hex: "#6366F1") // Indigo 500 (más vibrante)
+    static let primaryDark = Color(hex: "#4F46E5") // Indigo 600
+    static let danger      = Color(hex: "#EF4444") // Rose 500
+    static let success     = Color(hex: "#10B981") // Emerald 500
+    static let warning     = Color(hex: "#F59E0B") // Amber 500
+    static let info        = Color(hex: "#3B82F6") // Blue 500
     
-    // Backgrounds
-    static let background  = Color(uiColor: .systemGroupedBackground) // Para el fondo de la app (off-white/light gray)
-    static let cardBG      = Color(uiColor: .secondarySystemGroupedBackground) // Para tarjetas (suele ser blanco en light mode)
+    // Gradients
+    static let primaryGradient = LinearGradient(
+        colors: [primary, primaryDark],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+    
+    // Backgrounds & Surfaces
+    static let background  = Color(uiColor: .systemGroupedBackground)
+    static let cardBG      = Color(uiColor: .secondarySystemGroupedBackground)
+    static let surface     = Color(white: 1, opacity: 0.1)
 
-    // Radios de esquina unificados
-    static let radiusCard  : CGFloat = 16
-    static let radiusButton: CGFloat = 15
+    // Constants
+    static let radiusCard  : CGFloat = 20 // Bordes más suaves
+    static let radiusButton: CGFloat = 16
 
     static func currency(_ value: Double) -> String {
         let f = NumberFormatter()
@@ -50,20 +59,38 @@ enum AppTheme {
     }
 }
 
-// Custom ViewModifiers for consistent styling
+// Custom ViewModifiers for Professional UI
 struct CardModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding()
             .background(AppTheme.cardBG)
             .cornerRadius(AppTheme.radiusCard)
-            .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
+            .shadow(color: Color.black.opacity(0.06), radius: 10, x: 0, y: 4)
+    }
+}
+
+struct PrimaryButtonModifier: ViewModifier {
+    var isDisabled: Bool = false
+    func body(content: Content) -> some View {
+        content
+            .font(.headline)
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(isDisabled ? Color.gray.opacity(0.3) : AppTheme.primary)
+            .cornerRadius(AppTheme.radiusButton)
+            .shadow(color: isDisabled ? .clear : AppTheme.primary.opacity(0.3), radius: 8, x: 0, y: 4)
     }
 }
 
 extension View {
     func cardStyle() -> some View {
         self.modifier(CardModifier())
+    }
+    
+    func primaryButtonStyle(isDisabled: Bool = false) -> some View {
+        self.modifier(PrimaryButtonModifier(isDisabled: isDisabled))
     }
 }
 

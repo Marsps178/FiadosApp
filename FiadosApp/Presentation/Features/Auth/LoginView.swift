@@ -23,31 +23,42 @@ struct LoginView: View {
             
             // Formulario
             VStack(spacing: 20) {
-                TextField("Correo electrónico", text: $viewModel.email)
-                    .keyboardType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                    .padding()
-                    .background(Color(uiColor: .systemBackground))
-                    .cornerRadius(AppTheme.radiusButton)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: AppTheme.radiusButton)
-                            .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-                    )
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Correo electrónico")
+                        .font(.caption.bold())
+                        .foregroundColor(.secondary)
+                    TextField("ejemplo@tienda.com", text: $viewModel.email)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .padding()
+                        .background(AppTheme.cardBG)
+                        .cornerRadius(AppTheme.radiusButton)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppTheme.radiusButton)
+                                .stroke(Color.secondary.opacity(0.1), lineWidth: 1)
+                        )
+                }
                 
-                SecureField("Contraseña", text: $viewModel.password)
-                    .padding()
-                    .background(Color(uiColor: .systemBackground))
-                    .cornerRadius(AppTheme.radiusButton)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: AppTheme.radiusButton)
-                            .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-                    )
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Contraseña")
+                        .font(.caption.bold())
+                        .foregroundColor(.secondary)
+                    SecureField("••••••••", text: $viewModel.password)
+                        .padding()
+                        .background(AppTheme.cardBG)
+                        .cornerRadius(AppTheme.radiusButton)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppTheme.radiusButton)
+                                .stroke(Color.secondary.opacity(0.1), lineWidth: 1)
+                        )
+                }
                 
                 if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.caption)
                         .foregroundColor(AppTheme.danger)
                         .multilineTextAlignment(.center)
+                        .padding(.top, 5)
                 }
                 
                 if viewModel.isLoading {
@@ -59,13 +70,7 @@ struct LoginView: View {
                         Task { await viewModel.login() }
                     }) {
                         Text("Iniciar Sesión")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(viewModel.isFormValid ? AppTheme.primary : Color.gray)
-                            .cornerRadius(AppTheme.radiusButton)
-                            .shadow(color: viewModel.isFormValid ? AppTheme.primary.opacity(0.4) : .clear, radius: 10, x: 0, y: 5)
+                            .primaryButtonStyle(isDisabled: !viewModel.isFormValid)
                     }
                     .disabled(!viewModel.isFormValid)
                 }
