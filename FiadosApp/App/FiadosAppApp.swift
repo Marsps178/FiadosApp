@@ -5,7 +5,7 @@ import FirebaseCore
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        FirebaseApp.configure()
+        
         return true
     }
 }
@@ -17,6 +17,7 @@ struct FiadosAppApp: App {
     @State private var globalAuthViewModel: GlobalAuthViewModel
 
     init() {
+        FirebaseApp.configure()
         let dc = DependencyContainer()
         self.container = dc
         _globalAuthViewModel = State(initialValue: dc.makeGlobalAuthViewModel())
