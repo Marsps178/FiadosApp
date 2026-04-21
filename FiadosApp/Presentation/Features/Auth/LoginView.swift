@@ -9,16 +9,22 @@ struct LoginView: View {
             Spacer()
             
             // Logo / Título
-            VStack(spacing: 12) {
-                Image(systemName: "book.pages.fill")
-                    .font(.system(size: 60))
-                    .foregroundColor(AppTheme.primary)
+            VStack(spacing: 16) {
+                Image("logo") // Logo oficial
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .clipShape(Circle())
+                    .shadow(color: AppTheme.primary.opacity(0.2), radius: 10)
+                
                 Text("FiadosApp")
                     .font(.system(size: 34, weight: .black, design: .rounded))
                     .foregroundColor(AppTheme.primaryDark)
-                Text("Tu tienda bajo control.")
+                
+                Text("Tu negocio, bajo control.")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                    .tracking(1)
             }
             
             // Formulario

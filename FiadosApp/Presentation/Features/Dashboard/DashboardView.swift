@@ -16,14 +16,18 @@ struct DashboardView: View {
                     // --- HEADER CON SALUDO ---
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Hola, Negocio")
+                            Text("Hola, Negocio 👋")
                                 .font(.system(size: 28, weight: .bold, design: .rounded))
                             Text(Date().formatted(date: .long, time: .omitted))
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
                         Spacer()
-                        InitialsAvatar(name: "Usuario", size: 44)
+                        Image("logo") // Logo oficial en el Header
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 44, height: 44)
+                            .clipShape(Circle())
                             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
                     }
                     .padding(.top, 10)
