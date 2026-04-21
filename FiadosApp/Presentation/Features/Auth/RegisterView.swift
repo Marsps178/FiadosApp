@@ -7,51 +7,77 @@ struct RegisterView: View {
         VStack(spacing: 30) {
             
             // Header
-            VStack(spacing: 10) {
+            VStack(spacing: 12) {
+                Image(systemName: "person.badge.plus")
+                    .font(.system(size: 60))
+                    .foregroundColor(AppTheme.primary)
+                    .padding(.bottom, 10)
+                
                 Text("Crear Cuenta")
                     .font(.system(size: 34, weight: .black, design: .rounded))
                     .foregroundColor(AppTheme.primaryDark)
-                Text("Registra tu tienda para empezar")
+                
+                Text("Registra tu tienda para empezar a gestionar tus fiados de forma profesional.")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
             }
             .padding(.top, 40)
             
             // Formulario
             VStack(spacing: 20) {
-                TextField("Correo electrónico", text: $viewModel.email)
-                    .keyboardType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                    .padding()
-                    .background(Color(uiColor: .systemBackground))
-                    .cornerRadius(AppTheme.radiusButton)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: AppTheme.radiusButton)
-                            .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-                    )
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Correo electrónico")
+                        .font(.caption.bold())
+                        .foregroundColor(.secondary)
+                    TextField("ejemplo@tienda.com", text: $viewModel.email)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .padding()
+                        .background(AppTheme.cardBG)
+                        .cornerRadius(AppTheme.radiusButton)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppTheme.radiusButton)
+                                .stroke(Color.secondary.opacity(0.1), lineWidth: 1)
+                        )
+                }
                 
-                SecureField("Contraseña", text: $viewModel.password)
-                    .padding()
-                    .background(Color(uiColor: .systemBackground))
-                    .cornerRadius(AppTheme.radiusButton)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: AppTheme.radiusButton)
-                            .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-                    )
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Contraseña")
+                        .font(.caption.bold())
+                        .foregroundColor(.secondary)
+                    SecureField("••••••••", text: $viewModel.password)
+                        .padding()
+                        .background(AppTheme.cardBG)
+                        .cornerRadius(AppTheme.radiusButton)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppTheme.radiusButton)
+                                .stroke(Color.secondary.opacity(0.1), lineWidth: 1)
+                        )
+                }
                 
-                SecureField("Confirmar Contraseña", text: $viewModel.confirmPassword)
-                    .padding()
-                    .background(Color(uiColor: .systemBackground))
-                    .cornerRadius(AppTheme.radiusButton)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: AppTheme.radiusButton)
-                            .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-                    )
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Confirmar Contraseña")
+                        .font(.caption.bold())
+                        .foregroundColor(.secondary)
+                    SecureField("••••••••", text: $viewModel.confirmPassword)
+                        .padding()
+                        .background(AppTheme.cardBG)
+                        .cornerRadius(AppTheme.radiusButton)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppTheme.radiusButton)
+                                .stroke(Color.secondary.opacity(0.1), lineWidth: 1)
+                        )
+                }
                 
                 if !viewModel.password.isEmpty && viewModel.password != viewModel.confirmPassword {
-                    Text("Las contraseñas no coinciden")
-                        .font(.caption)
-                        .foregroundColor(AppTheme.danger)
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                        Text("Las contraseñas no coinciden")
+                    }
+                    .font(.caption.bold())
+                    .foregroundColor(AppTheme.danger)
                 }
                 
                 if let error = viewModel.errorMessage {
@@ -59,6 +85,7 @@ struct RegisterView: View {
                         .font(.caption)
                         .foregroundColor(AppTheme.danger)
                         .multilineTextAlignment(.center)
+                        .padding(.top, 5)
                 }
                 
                 if viewModel.isLoading {
@@ -70,13 +97,7 @@ struct RegisterView: View {
                         Task { await viewModel.register() }
                     }) {
                         Text("Crear Cuenta")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(viewModel.isFormValid ? AppTheme.primary : Color.gray)
-                            .cornerRadius(AppTheme.radiusButton)
-                            .shadow(color: viewModel.isFormValid ? AppTheme.primary.opacity(0.4) : .clear, radius: 10, x: 0, y: 5)
+                            .primaryButtonStyle(isDisabled: !viewModel.isFormValid)
                     }
                     .disabled(!viewModel.isFormValid)
                 }

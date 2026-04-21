@@ -3,6 +3,7 @@ import SwiftUI
 struct AddCustomerView: View {
     @State var viewModel: AddCustomerViewModel
     @Environment(\.dismiss) var dismiss
+    @State private var showSuccessToast: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -116,9 +117,13 @@ struct AddCustomerView: View {
             .onChange(of: viewModel.shouldDismiss) { _, newValue in
                 if newValue { 
                     HapticManager.notification(type: .success)
-                    dismiss() 
+                    withAnimation { showSuccessToast = true }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                        dismiss() 
+                    }
                 }
             }
+            .successToast(isPresented: $showSuccessToast, message: "Cliente guardado con éxito")
         }
     }
 }

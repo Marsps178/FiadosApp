@@ -7,6 +7,7 @@ struct AddTransactionView: View {
     @State private var amount: String = ""
     @State private var concept: String = ""
     @State private var selectedType: TransactionType = .charge
+    @State private var showSuccessToast: Bool = false
 
     // Validación local de UI
     var isFormValid: Bool {
@@ -178,7 +179,10 @@ struct AddTransactionView: View {
                                 await viewModel.addTransaction(amount: value, concept: concept, type: selectedType)
                                 if viewModel.errorMessage == nil {
                                     HapticManager.notification(type: .success)
-                                    dismiss()
+                                    withAnimation { showSuccessToast = true }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                                        dismiss()
+                                    }
                                 }
                             }
                         }
@@ -214,6 +218,7 @@ struct AddTransactionView: View {
             } message: {
                 Text(viewModel.errorMessage ?? "")
             }
+            .successToast(isPresented: $showSuccessToast, message: "Movimiento registrado con éxito")
         }
     }
 }

@@ -96,6 +96,52 @@ extension View {
     func skeleton(isLoading: Bool) -> some View {
         self.modifier(SkeletonModifier(isLoading: isLoading))
     }
+    
+    func successToast(isPresented: Binding<Bool>, message: String) -> some View {
+        self.modifier(SuccessToastModifier(isPresented: isPresented, message: message))
+    }
+}
+
+struct SuccessToastModifier: ViewModifier {
+    @Binding var isPresented: Bool
+    let message: String
+    
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+            
+            if isPresented {
+                VStack {
+                    HStack(spacing: 12) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.white)
+                            .font(.title3)
+                        
+                        Text(message)
+                            .font(.subheadline.bold())
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 12)
+                    .background(AppTheme.success.gradient)
+                    .cornerRadius(30)
+                    .shadow(color: AppTheme.success.opacity(0.4), radius: 10, x: 0, y: 5)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation {
+                                isPresented = false
+                            }
+                        }
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.top, 20)
+                .zIndex(100)
+            }
+        }
+    }
 }
 
 struct SkeletonModifier: ViewModifier {
