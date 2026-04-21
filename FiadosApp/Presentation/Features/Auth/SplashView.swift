@@ -8,12 +8,21 @@ struct SplashView: View {
     var body: some View {
         VStack {
             VStack {
-                Image("logo") // Referencia al logo.png en Resources
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 150, height: 150)
-                    .clipShape(Circle())
-                    .shadow(color: AppTheme.primary.opacity(0.3), radius: 20)
+                if let uiImage = UIImage(contentsOfFile: Bundle.main.path(forResource: "logo", ofType: "png") ?? "") {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 150, height: 150)
+                        .clipShape(Circle())
+                        .shadow(color: AppTheme.primary.opacity(0.3), radius: 20)
+                } else {
+                    // Fallback si no encuentra el archivo físico
+                    Image(systemName: "cart.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                        .foregroundColor(AppTheme.primary)
+                }
                 
                 Text("FiadosApp")
                     .font(.system(size: 38, weight: .black, design: .rounded))

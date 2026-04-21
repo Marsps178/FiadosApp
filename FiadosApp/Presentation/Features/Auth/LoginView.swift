@@ -10,12 +10,18 @@ struct LoginView: View {
             
             // Logo / Título
             VStack(spacing: 16) {
-                Image("logo") // Logo oficial
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 100)
-                    .clipShape(Circle())
-                    .shadow(color: AppTheme.primary.opacity(0.2), radius: 10)
+                if let uiImage = UIImage(contentsOfFile: Bundle.main.path(forResource: "logo", ofType: "png") ?? "") {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                        .clipShape(Circle())
+                        .shadow(color: AppTheme.primary.opacity(0.2), radius: 10)
+                } else {
+                    Image(systemName: "book.closed.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(AppTheme.primary)
+                }
                 
                 Text("FiadosApp")
                     .font(.system(size: 34, weight: .black, design: .rounded))
