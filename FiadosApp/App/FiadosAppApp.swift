@@ -13,7 +13,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct FiadosAppApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    let container = DependencyContainer()
+    var container = DependencyContainer()
     @State private var globalAuthViewModel: GlobalAuthViewModel
 
     init() {
