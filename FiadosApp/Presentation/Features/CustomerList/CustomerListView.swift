@@ -27,6 +27,7 @@ struct CustomerListView: View {
                     }
                 }
                 .onDelete { indexSet in
+                    HapticManager.impact(style: .medium)
                     Task {
                         await viewModel.deleteCustomers(at: indexSet)
                     }

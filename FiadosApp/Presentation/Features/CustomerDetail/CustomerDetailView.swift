@@ -9,6 +9,25 @@ struct CustomerDetailView: View {
         VStack {
             // Header con resumen de deuda
             VStack(spacing: 8) {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(viewModel.customer.name)
+                            .font(.title3.bold())
+                        if !viewModel.customer.phoneNumber.isEmpty {
+                            Link(destination: URL(string: "tel:\(viewModel.customer.phoneNumber)")!) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "phone.fill")
+                                    Text(viewModel.customer.phoneNumber)
+                                }
+                                .font(.caption)
+                                .foregroundColor(AppTheme.primary)
+                            }
+                        }
+                    }
+                    Spacer()
+                }
+                .padding(.bottom, 10)
+                
                 Text("Deuda Actual")
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -89,10 +108,30 @@ struct CustomerDetailView: View {
         .navigationTitle(viewModel.customer.name)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Nueva Operación") { isShowingAddTransaction = true }
+                HStack(spacing: 15) {
+                    // Botón Compartir (HU adicional)
+                    let shareMessage = """
+                    📋 *Estado de Cuenta - FiadosApp*
+                    👤 Cliente: \(viewModel.customer.name)
+                    💰 Deuda Actual: \(AppTheme.currency(viewModel.customer.currentDebt))
+                    ✅ Crédito Disponible: \(AppTheme.currency(viewModel.customer.availableCredit))
+                    📅 Fecha: \(Date().formatted(date: .abbreviated, time: .omitted))
+                    """
+                    
+                    ShareLink(item: shareMessage) {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 16, weight: .bold))
+                    }
+                    
+                    Button("Nueva Operación") { 
+                        HapticManager.selection()
+                        isShowingAddTransaction = true 
+                    }
+                }
             }
             ToolbarItem(placement: .topBarLeading) {
                 Button {
+                    HapticManager.selection()
                     isShowingEditLimit = true
                 } label: {
                     Image(systemName: "pencil.circle")

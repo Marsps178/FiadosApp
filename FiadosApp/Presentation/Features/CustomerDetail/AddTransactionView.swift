@@ -67,8 +67,7 @@ struct AddTransactionView: View {
                             Task {
                                 await viewModel.addTransaction(amount: value, concept: concept, type: selectedType)
                                 if viewModel.errorMessage == nil {
-                                    let generator = UINotificationFeedbackGenerator()
-                                    generator.notificationOccurred(.success)
+                                    HapticManager.notification(type: .success)
                                     dismiss()
                                 }
                             }

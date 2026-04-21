@@ -66,6 +66,7 @@ struct RegisterView: View {
                         .padding()
                 } else {
                     Button(action: {
+                        HapticManager.selection()
                         Task { await viewModel.register() }
                     }) {
                         Text("Crear Cuenta")

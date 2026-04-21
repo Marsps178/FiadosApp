@@ -42,7 +42,10 @@ struct AddCustomerView: View {
                 }
             }
             .onChange(of: viewModel.shouldDismiss) { _, newValue in
-                if newValue { dismiss() }
+                if newValue { 
+                    HapticManager.notification(type: .success)
+                    dismiss() 
+                }
             }
         }
     }

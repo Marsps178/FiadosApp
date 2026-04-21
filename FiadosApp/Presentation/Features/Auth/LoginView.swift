@@ -55,6 +55,7 @@ struct LoginView: View {
                         .padding()
                 } else {
                     Button(action: {
+                        HapticManager.selection()
                         Task { await viewModel.login() }
                     }) {
                         Text("Iniciar Sesión")

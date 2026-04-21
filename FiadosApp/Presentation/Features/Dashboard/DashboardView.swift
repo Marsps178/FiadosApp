@@ -1,4 +1,5 @@
 import SwiftUI
+import Charts
 
 struct DashboardView: View {
     @State var viewModel: DashboardViewModel
@@ -34,6 +35,39 @@ struct DashboardView: View {
                 )
                 .cornerRadius(AppTheme.radiusCard)
                 .shadow(color: AppTheme.primary.opacity(0.4), radius: 15, x: 0, y: 8)
+                
+                // --- GRÁFICO DE DEUDAS (HU adicional) ---
+                if !viewModel.topDebtors.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Distribución de Deuda")
+                            .font(.headline)
+                        
+                        Chart {
+                            ForEach(viewModel.topDebtors) { customer in
+                                BarMark(
+                                    x: .value("Deuda", customer.currentDebt),
+                                    y: .value("Cliente", customer.name)
+                                )
+                                .foregroundStyle(AppTheme.primary.gradient)
+                                .annotation(position: .trailing) {
+                                    Text(AppTheme.currency(customer.currentDebt))
+                                        .font(.caption2)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                        .frame(height: 150)
+                        .chartXAxis(.hidden)
+                        .chartYAxis {
+                            AxisMarks { value in
+                                AxisValueLabel()
+                            }
+                        }
+                    }
+                    .padding()
+                    .background(AppTheme.cardBG)
+                    .cornerRadius(AppTheme.radiusCard)
+                }
                 
                 // --- SECCIÓN TOP DEUDORES (HU-08) ---
                 VStack(alignment: .leading, spacing: 15) {
