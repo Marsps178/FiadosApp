@@ -14,6 +14,7 @@ struct RootView: View {
                 NavigationStack {
                     DashboardView(
                         viewModel: container.makeDashboardViewModel(),
+                        authViewModel: authViewModel,
                         container: container
                     )
                 }

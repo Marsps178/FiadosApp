@@ -45,8 +45,8 @@ enum AppTheme {
     static func currency(_ value: Double) -> String {
         let f = NumberFormatter()
         f.numberStyle = .currency
-        f.locale = Locale(identifier: "es_MX")
-        return f.string(from: NSNumber(value: value)) ?? "$\(value)"
+        f.locale = Locale(identifier: "es_PE") // Soles Peruanos
+        return f.string(from: NSNumber(value: value)) ?? "S/ \(String(format: "%.2f", value))"
     }
 }
 

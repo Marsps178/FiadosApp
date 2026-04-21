@@ -3,6 +3,7 @@ import Charts
 
 struct DashboardView: View {
     @State var viewModel: DashboardViewModel
+    @Bindable var authViewModel: GlobalAuthViewModel
     let container: DependencyContainer
     
     var body: some View {
@@ -121,6 +122,8 @@ struct DashboardView: View {
                 )
             case .customerDetail(let customer):
                 CustomerDetailView(viewModel: container.makeCustomerDetailViewModel(customer: customer))
+            case .settings:
+                SettingsView(authViewModel: authViewModel)
             }
         }
         .refreshable {
@@ -141,10 +144,14 @@ struct DashboardView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    viewModel.logout()
+                    HapticManager.selection()
+                    // Navegar a Configuración en lugar de logout directo
                 }) {
-                    Image(systemName: "rectangle.portrait.and.arrow.right")
-                        .foregroundColor(AppTheme.danger)
+                    NavigationLink(value: AppRoute.settings) {
+                        Image(systemName: "person.circle.fill")
+                            .font(.title3)
+                            .foregroundColor(AppTheme.primary)
+                    }
                 }
             }
         }
