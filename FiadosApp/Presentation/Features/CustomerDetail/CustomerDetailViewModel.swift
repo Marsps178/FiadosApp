@@ -7,6 +7,7 @@ class CustomerDetailViewModel {
     var transactions: [DebtTransaction] = []
     var isLoading: Bool = false
     var errorMessage: String?
+    var shouldDismiss: Bool = false
     
     // Dependencias
     private let transactionRepo: TransactionRepositoryProtocol
@@ -105,5 +106,19 @@ class CustomerDetailViewModel {
             self.errorMessage = "No se pudo actualizar el límite: \(error.localizedDescription)"
         }
         isLoading = false
+    }
+    
+    @MainActor
+    func deleteCustomer() async {
+        isLoading = true
+        errorMessage = nil
+        do {
+            try await customerRepo.deleteCustomer(customerId: customer.id)
+            isLoading = false
+            shouldDismiss = true
+        } catch {
+            self.errorMessage = "No se pudo eliminar: \(error.localizedDescription)"
+            isLoading = false
+        }
     }
 }

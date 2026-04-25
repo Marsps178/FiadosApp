@@ -4,6 +4,8 @@ struct CustomerDetailView: View {
     @Bindable var viewModel: CustomerDetailViewModel
     @State private var isShowingAddTransaction = false
     @State private var isShowingEditLimit = false
+    @State private var isShowingDeleteAlert = false
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
@@ -178,7 +180,25 @@ struct CustomerDetailView: View {
                 } label: {
                     Image(systemName: "pencil.circle")
                 }
+                
+                Button(role: .destructive) {
+                    isShowingDeleteAlert = true
+                } label: {
+                    Image(systemName: "trash")
+                        .foregroundColor(AppTheme.danger)
+                }
             }
+        }
+        .alert("Eliminar Cliente", isPresented: $isShowingDeleteAlert) {
+            Button("Cancelar", role: .cancel) { }
+            Button("Eliminar", role: .destructive) {
+                Task { await viewModel.deleteCustomer() }
+            }
+        } message: {
+            Text("¿Estás seguro de que deseas eliminar a \(viewModel.customer.name)? Esta acción eliminará también todo su historial de transacciones y no se puede deshacer.")
+        }
+        .onChange(of: viewModel.shouldDismiss) { _, newValue in
+            if newValue { dismiss() }
         }
         .sheet(isPresented: $isShowingAddTransaction) {
             AddTransactionView(viewModel: viewModel)

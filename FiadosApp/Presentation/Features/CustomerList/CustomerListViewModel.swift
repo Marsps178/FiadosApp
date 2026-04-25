@@ -49,6 +49,19 @@ class CustomerListViewModel {
     }
     
     @MainActor
+    func deleteCustomer(id: String) async {
+        isLoading = true
+        do {
+            try await repository.deleteCustomer(customerId: id)
+            customers.removeAll { $0.id == id }
+            isLoading = false
+        } catch {
+            self.errorMessage = "No se pudo eliminar: \(error.localizedDescription)"
+            isLoading = false
+        }
+    }
+    
+    @MainActor
     func deleteCustomers(at offsets: IndexSet) async {
         for index in offsets {
             let customerId = filteredCustomers[index].id

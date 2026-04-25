@@ -36,11 +36,10 @@ struct CustomerListView: View {
                                 CustomerRowView(customer: customer)
                             }
                             .buttonStyle(.plain)
-                            .swipeActions(edge: .trailing) {
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 Button(role: .destructive) {
                                     HapticManager.impact(style: .medium)
-                                    // Nota: La lógica de borrar necesita el index o id, 
-                                    // por simplicidad mantenemos el SwipeAction si el ViewModel lo soporta.
+                                    Task { await viewModel.deleteCustomer(id: customer.id) }
                                 } label: {
                                     Label("Eliminar", systemImage: "trash")
                                 }
