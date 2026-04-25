@@ -18,6 +18,12 @@ struct SettingsView: View {
                             Text("Dueño de la Tienda")
                                 .font(.system(size: 20, weight: .bold, design: .rounded))
                             
+                            if let email = authViewModel.userEmail {
+                                Text(email)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                            
                             HStack(spacing: 4) {
                                 Image(systemName: "checkmark.seal.fill")
                                     .foregroundColor(AppTheme.success)

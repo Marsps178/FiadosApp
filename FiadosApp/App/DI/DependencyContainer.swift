@@ -52,6 +52,10 @@ final class DependencyContainer {
         ObserveAuthStateUseCase(repository: authRepository)
     }
     
+    func makeGetCurrentUserEmailUseCase() -> GetCurrentUserEmailUseCase {
+        GetCurrentUserEmailUseCase(repository: authRepository)
+    }
+    
     // 3. Métodos para la gestión de clientes (CRUD)
     func getCustomerRepository() -> CustomerRepositoryProtocol {
         customerRepository
@@ -97,7 +101,8 @@ final class DependencyContainer {
     func makeGlobalAuthViewModel() -> GlobalAuthViewModel {
         GlobalAuthViewModel(
             observeUseCase: makeObserveAuthStateUseCase(),
-            logoutUseCase: makeLogoutUseCase()
+            logoutUseCase: makeLogoutUseCase(),
+            getEmailUseCase: makeGetCurrentUserEmailUseCase()
         )
     }
 }

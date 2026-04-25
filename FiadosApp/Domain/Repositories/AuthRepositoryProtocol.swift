@@ -6,4 +6,5 @@ protocol AuthRepositoryProtocol {
     func logout() throws
     func isUserAuthenticated() -> Bool
     func observeAuthState(completion: @escaping (Bool) -> Void)
+    func getCurrentUserEmail() -> String?
 }

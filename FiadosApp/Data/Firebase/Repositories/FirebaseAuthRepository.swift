@@ -24,4 +24,8 @@ final class FirebaseAuthRepository: AuthRepositoryProtocol {
             completion(user != nil)
         }
     }
+    
+    func getCurrentUserEmail() -> String? {
+        return Auth.auth().currentUser?.email
+    }
 }

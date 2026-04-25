@@ -31,3 +31,11 @@ struct ObserveAuthStateUseCase {
         repository.observeAuthState(completion: completion)
     }
 }
+
+struct GetCurrentUserEmailUseCase {
+    let repository: AuthRepositoryProtocol
+    
+    func execute() -> String? {
+        repository.getCurrentUserEmail()
+    }
+}
