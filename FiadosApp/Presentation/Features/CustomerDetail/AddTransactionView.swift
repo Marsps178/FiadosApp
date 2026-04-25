@@ -9,12 +9,12 @@ struct AddTransactionView: View {
     @State private var selectedType: TransactionType = .charge
     @State private var showSuccessToast: Bool = false
 
-    // Validación local de UI
+    // Validación
     var isFormValid: Bool {
         guard let value = Double(amount), value > 0 else { return false }
         if concept.trimmingCharacters(in: .whitespaces).isEmpty { return false }
 
-        // Regla HU-05: El abono no puede ser mayor a la deuda
+        // Regla: El abono no puede ser mayor a la deuda
         if selectedType == .credit && value > viewModel.customer.currentDebt {
             return false
         }

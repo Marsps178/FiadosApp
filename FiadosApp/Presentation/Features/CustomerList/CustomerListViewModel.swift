@@ -22,7 +22,7 @@ class CustomerListViewModel {
     
     var sortOrder: SortOrder = .name
     
-    // Filtro de búsqueda (HU-02) y ordenamiento
+    // Filtro de búsqueda
     var filteredCustomers: [Customer] {
         let filtered = searchText.isEmpty ? customers : customers.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         

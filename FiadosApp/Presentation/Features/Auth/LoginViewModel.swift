@@ -23,8 +23,6 @@ final class LoginViewModel {
         errorMessage = nil
         do {
             try await loginUseCase.execute(email: email, password: password)
-            // No seteamos isLoading = false aquí si logramos entrar porque el rootview
-            // transicionará automáticamente al Dashboard (al detectar que isAuthenticated=true)
         } catch {
             isLoading = false
             errorMessage = error.localizedDescription

@@ -22,7 +22,7 @@ class FirebaseTransactionRepository: TransactionRepositoryProtocol {
             throw NSError(domain: "Auth", code: 401, userInfo: [NSLocalizedDescriptionKey: "Usuario no autenticado"])
         }
         var dto = transaction.toDTO()
-        dto.userId = userId // Inyectamos el ID del dueño
+        dto.userId = userId
         try await db.collection(collectionName).document(transaction.id).setData(from: dto)
     }
 }

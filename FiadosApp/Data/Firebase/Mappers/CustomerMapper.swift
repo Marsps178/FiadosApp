@@ -5,9 +5,9 @@ extension CustomerDTO {
         Customer(
             id: id ?? UUID().uuidString,
             name: name,
-            phoneNumber: phone,      // DTO 'phone' -> Domain 'phoneNumber'
-            creditLimit: limit,      // DTO 'limit' -> Domain 'creditLimit'
-            currentDebt: debt        // DTO 'debt'  -> Domain 'currentDebt'
+            phoneNumber: phone,
+            creditLimit: limit,
+            currentDebt: debt
         )
     }
 }
@@ -17,9 +17,9 @@ extension Customer {
         CustomerDTO(
             id: id,
             name: name,
-            phone: phoneNumber,     // Domain 'phoneNumber' -> DTO 'phone'
-            limit: creditLimit,     // Domain 'creditLimit' -> DTO 'limit'
-            debt: currentDebt       // Domain 'currentDebt' -> DTO 'debt'
+            phone: phoneNumber,
+            limit: creditLimit,
+            debt: currentDebt       
         )
     }
 }

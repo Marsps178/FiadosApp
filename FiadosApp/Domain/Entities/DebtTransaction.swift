@@ -1,8 +1,8 @@
 import Foundation
 
 enum TransactionType: String, Hashable{
-    case charge // Cargo (fiado)
-    case credit // Abono (pago)
+    case charge // fiado
+    case credit // pago
 }
 
 struct DebtTransaction: Identifiable, Equatable, Hashable {

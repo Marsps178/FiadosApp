@@ -13,7 +13,6 @@ struct DashboardView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 28) {
                     
-                    // --- HEADER CON SALUDO ---
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Hola, Negocio")
@@ -36,7 +35,7 @@ struct DashboardView: View {
                     }
                     .padding(.top, 10)
                     
-                    // --- TARJETA DE RESUMEN (HU-07) ---
+                    // --- TARJETA DE RESUMEN
                     VStack(spacing: 16) {
                         HStack {
                             VStack(alignment: .leading, spacing: 8) {
@@ -191,8 +190,6 @@ struct DashboardView: View {
             await viewModel.loadDashboard()
         }
         .onAppear {
-            // onAppear se dispara tanto en la carga inicial como al regresar
-            // desde CustomerDetail o CustomerList via NavigationStack.
             Task {
                 await viewModel.loadDashboard()
             }

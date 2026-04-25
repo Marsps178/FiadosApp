@@ -37,7 +37,7 @@ class AddCustomerViewModel {
             name: name,
             phoneNumber: phone,
             creditLimit: Double(limit) ?? 0,
-            currentDebt: 0 // Un cliente nuevo empieza con deuda 0
+            currentDebt: 0 
         )
         
         do {

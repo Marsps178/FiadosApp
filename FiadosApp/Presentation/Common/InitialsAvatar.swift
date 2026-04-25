@@ -12,9 +12,6 @@ struct InitialsAvatar: View {
             .uppercased()
     }
 
-    // FIX #4: Color determinístico estable entre sesiones.
-    // String.hashValue es aleatorio por ejecución desde Swift 4.2.
-    // Usamos suma de bytes UTF-8, que siempre produce el mismo resultado.
     private var color: Color {
         let colors: [Color] = [.indigo, .purple, .teal, .orange, .pink, .cyan]
         let byteSum = name.utf8.reduce(0) { Int($0) + Int($1) }

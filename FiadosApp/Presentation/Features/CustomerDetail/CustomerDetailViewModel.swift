@@ -62,8 +62,6 @@ class CustomerDetailViewModel {
         do {
             try await registerUseCase.execute(newTransaction, for: customer)
 
-            // Actualizar deuda local con el mismo cálculo que el UseCase
-            // max(0, ...) como red de protección ante posibles decimales flotantes
             let updatedDebt: Double
             if type == .charge {
                 updatedDebt = customer.currentDebt + amount
@@ -77,8 +75,6 @@ class CustomerDetailViewModel {
                 creditLimit: customer.creditLimit,
                 currentDebt: updatedDebt
             )
-
-            // Recargar historial desde Firebase
             await loadTransactions()
         } catch {
             self.errorMessage = error.localizedDescription
@@ -93,7 +89,6 @@ class CustomerDetailViewModel {
         errorMessage = nil
         do {
             try await customerRepo.updateCreditLimit(customerId: customer.id, newLimit: newLimit)
-            // Actualizar objeto local local para reflejar la UI
             self.customer = Customer(
                 id: customer.id,
                 name: customer.name,
