@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     let authViewModel: GlobalAuthViewModel
     @Environment(\.dismiss) var dismiss
+    @State private var settings = AppSettingsManager.shared
     
     var body: some View {
         ZStack {
@@ -42,8 +43,30 @@ struct SettingsView: View {
                 .listRowBackground(AppTheme.cardBG)
                 
                 Section("PREFERENCIAS") {
-                    SettingsRow(icon: "dollarsign.circle.fill", title: "Moneda", value: "Soles (S/)", color: .orange)
-                    SettingsRow(icon: "globe", title: "Idioma", value: "Español", color: .blue)
+                    // Selector de Moneda
+                    Menu {
+                        Picker("Moneda", selection: $settings.currency) {
+                            ForEach(AppSettingsManager.Currency.allCases) { currency in
+                                Text(currency.name).tag(currency)
+                            }
+                        }
+                    } label: {
+                        SettingsRow(icon: "dollarsign.circle.fill", title: "Moneda", value: settings.currency.name, color: .orange)
+                    }
+                    .buttonStyle(.plain)
+
+                    // Selector de Idioma
+                    Menu {
+                        Picker("Idioma", selection: $settings.language) {
+                            ForEach(AppSettingsManager.Language.allCases) { language in
+                                Text(language.name).tag(language)
+                            }
+                        }
+                    } label: {
+                        SettingsRow(icon: "globe", title: "Idioma", value: settings.language.name, color: .blue)
+                    }
+                    .buttonStyle(.plain)
+
                     SettingsRow(icon: "bell.fill", title: "Notificaciones", value: "Activadas", color: .red)
                 }
                 .listRowBackground(AppTheme.cardBG)
