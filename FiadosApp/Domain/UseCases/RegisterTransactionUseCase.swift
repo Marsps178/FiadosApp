@@ -10,6 +10,11 @@ struct RegisterTransactionUseCase {
     }
 
     func execute(_ transaction: DebtTransaction, for customer: Customer) async throws {
+        // 0. Validar monto básico
+        if transaction.amount <= 0 {
+            throw AppError.invalidAmount
+        }
+
         // 1. Validar según el tipo de transacción
         if transaction.type == .charge {
             // Cargo (fiado): verificar que no supere el límite de crédito

@@ -40,6 +40,11 @@ class CustomerDetailViewModel {
     
     @MainActor
     func addTransaction(amount: Double, concept: String, type: TransactionType) async {
+        if amount <= 0 {
+            self.errorMessage = "El monto debe ser mayor a cero."
+            return
+        }
+
         isLoading = true
         errorMessage = nil
 

@@ -20,14 +20,38 @@ class AddCustomerViewModel {
     
     // Validación básica
     var isFormValid: Bool {
-        !name.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !phone.trimmingCharacters(in: .whitespaces).isEmpty &&
-        (Double(limit) ?? 0) > 0
+        validateForm() == nil
+    }
+    
+    func validateForm() -> String? {
+        if name.trimmingCharacters(in: .whitespaces).isEmpty {
+            return "El nombre es obligatorio."
+        }
+        
+        let cleanPhone = phone.trimmingCharacters(in: .whitespaces)
+        if cleanPhone.count < 8 {
+            return "El teléfono debe tener al menos 8 dígitos."
+        }
+        
+        // Validar que solo contenga números
+        let phoneRegex = "^[0-9]+$"
+        let phonePredicate = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
+        if !phonePredicate.evaluate(with: cleanPhone) {
+            return "El teléfono solo debe contener números."
+        }
+        
+        guard let amount = Double(limit), amount > 0 else {
+            return "El límite de crédito debe ser mayor a 0."
+        }
+        return nil
     }
     
     @MainActor
     func saveCustomer() async {
-        guard isFormValid else { return }
+        if let validationError = validateForm() {
+            self.errorMessage = validationError
+            return
+        }
         
         isLoading = true
         errorMessage = nil
