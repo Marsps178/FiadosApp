@@ -8,7 +8,8 @@ struct AddTransactionView: View {
     @State private var concept: String = ""
     @State private var selectedType: TransactionType = .charge
     @State private var showSuccessToast: Bool = false
-
+    @State private var showConfirmAlert: Bool = false
+    
     // Validación
     var isFormValid: Bool {
         guard let value = Double(amount), value > 0 else { return false }
@@ -71,7 +72,7 @@ struct AddTransactionView: View {
                                     .foregroundColor(.secondary)
                                 
                                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                                    Text("S/")
+                                    Text(AppSettingsManager.shared.currency.symbol)
                                         .font(.title2.bold())
                                         .foregroundColor(selectedType == .charge ? AppTheme.danger : AppTheme.success)
                                     
@@ -174,6 +175,22 @@ struct AddTransactionView: View {
                 VStack {
                     Spacer()
                     Button(action: {
+                        HapticManager.selection()
+                        showConfirmAlert = true
+                    }) {
+                        if viewModel.isLoading {
+                            ProgressView().tint(.white)
+                        } else {
+                            Text("Confirmar \(selectedType == .charge ? "Cargo" : "Abono")")
+                        }
+                    }
+                    .primaryButtonStyle(isDisabled: !isFormValid || viewModel.isLoading)
+                    .padding()
+                    .background(AppTheme.background)
+                }
+                .alert("Confirmar Operación", isPresented: $showConfirmAlert) {
+                    Button("Cancelar", role: .cancel) { }
+                    Button("Confirmar", role: .none) {
                         if let value = Double(amount) {
                             Task {
                                 await viewModel.addTransaction(amount: value, concept: concept, type: selectedType)
@@ -186,16 +203,11 @@ struct AddTransactionView: View {
                                 }
                             }
                         }
-                    }) {
-                        if viewModel.isLoading {
-                            ProgressView().tint(.white)
-                        } else {
-                            Text("Confirmar \(selectedType == .charge ? "Cargo" : "Abono")")
-                        }
                     }
-                    .primaryButtonStyle(isDisabled: !isFormValid || viewModel.isLoading)
-                    .padding()
-                    .background(AppTheme.background)
+                } message: {
+                    if let value = Double(amount) {
+                        Text("¿Deseas registrar este \(selectedType == .charge ? "cargo" : "abono") por \(AppTheme.currency(value))?")
+                    }
                 }
             }
             .navigationTitle("Nuevo Movimiento")

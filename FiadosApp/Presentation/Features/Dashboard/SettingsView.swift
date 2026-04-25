@@ -4,6 +4,7 @@ struct SettingsView: View {
     let authViewModel: GlobalAuthViewModel
     @Environment(\.dismiss) var dismiss
     @State private var settings = AppSettingsManager.shared
+    @State private var showLogoutAlert = false
     
     var body: some View {
         ZStack {
@@ -81,7 +82,7 @@ struct SettingsView: View {
                 Section {
                     Button(action: {
                         HapticManager.notification(type: .warning)
-                        authViewModel.logout()
+                        showLogoutAlert = true
                     }) {
                         HStack {
                             Spacer()
@@ -94,6 +95,14 @@ struct SettingsView: View {
                     }
                 }
                 .listRowBackground(AppTheme.cardBG)
+                .alert("Cerrar Sesión", isPresented: $showLogoutAlert) {
+                    Button("Cancelar", role: .cancel) { }
+                    Button("Cerrar Sesión", role: .destructive) {
+                        authViewModel.logout()
+                    }
+                } message: {
+                    Text("¿Estás seguro de que deseas salir? Deberás ingresar tus credenciales la próxima vez.")
+                }
                 
                 Section {
                     VStack(spacing: 4) {
