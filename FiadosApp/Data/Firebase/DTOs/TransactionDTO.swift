@@ -8,3 +8,4 @@ struct TransactionDTO: Codable {
     let timestamp: Date
     let type: String
     var userId: String?
+}
