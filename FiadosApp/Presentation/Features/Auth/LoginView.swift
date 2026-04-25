@@ -13,7 +13,7 @@ struct LoginView: View {
                 if let uiImage = UIImage(contentsOfFile: Bundle.main.path(forResource: "logo", ofType: "png") ?? "") {
                     Image(uiImage: uiImage)
                         .resizable()
-                        .scaledToFit()
+                        .scaledToFill()
                         .frame(width: 100, height: 100)
                         .clipShape(Circle())
                         .shadow(color: AppTheme.primary.opacity(0.2), radius: 10)

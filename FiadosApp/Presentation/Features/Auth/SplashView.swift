@@ -11,7 +11,7 @@ struct SplashView: View {
                 if let uiImage = UIImage(contentsOfFile: Bundle.main.path(forResource: "logo", ofType: "png") ?? "") {
                     Image(uiImage: uiImage)
                         .resizable()
-                        .scaledToFit()
+                        .scaledToFill()
                         .frame(width: 150, height: 150)
                         .clipShape(Circle())
                         .shadow(color: AppTheme.primary.opacity(0.3), radius: 20)

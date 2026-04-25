@@ -25,7 +25,7 @@ struct DashboardView: View {
                         if let uiImage = UIImage(contentsOfFile: Bundle.main.path(forResource: "logo", ofType: "png") ?? "") {
                             Image(uiImage: uiImage)
                                 .resizable()
-                                .scaledToFit()
+                                .scaledToFill()
                                 .frame(width: 44, height: 44)
                                 .clipShape(Circle())
                                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
