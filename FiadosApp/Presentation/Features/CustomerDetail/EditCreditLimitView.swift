@@ -6,7 +6,13 @@ struct EditCreditLimitView: View {
     
     @State private var newLimit: String = ""
     @State private var showSuccessToast: Bool = false
-    
+    //comprobacion para hacer que el boton esuche una accion o no y para añadir estilo de no clicable
+    private var isFormInvalid: Bool {
+    Double(newLimit) == nil ||
+    (Double(newLimit) ?? 0) < viewModel.customer.currentDebt ||
+    Double(newLimit) == viewModel.customer.creditLimit ||
+    viewModel.isLoading
+}
     var body: some View {
         NavigationStack {
             ZStack {
@@ -100,12 +106,8 @@ struct EditCreditLimitView: View {
                             Text("Actualizar Límite")
                         }
                     }
-                    .primaryButtonStyle(isDisabled: 
-                        Double(newLimit) == nil ||
-                        (Double(newLimit) ?? 0) < viewModel.customer.currentDebt ||
-                        Double(newLimit) == viewModel.customer.creditLimit ||
-                        viewModel.isLoading
-                    )
+                    .primaryButtonStyle(isDisabled: isFormInvalid)
+                    .disabled(isFormInvalid)
                     .padding()
                     .background(AppTheme.background)
                 }
